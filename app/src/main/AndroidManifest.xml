@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.nhnnext.android.kumdo"
+    android:versionCode="1"
+    android:versionName="0.0.1">
+
+    <!-- Internet 통신을 위한 Permission -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 갤러리에 이미지 저장을 위한 Permission -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- 갤러리 리스트를 불러오기 위한 Permission -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- Jelly Bean ~ Lollipop -->
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+
+    <!-- TODO check default value -->
+    <supports-screens
+        android:resizeable="true"
+        android:smallScreens="true"
+        android:largeScreens="true" />
+
+    <compatible-screens>
+        <screen android:screenSize="small" android:screenDensity="ldpi" />
+        <screen android:screenSize="small" android:screenDensity="mdpi" />
+        <screen android:screenSize="small" android:screenDensity="hdpi" />
+        <screen android:screenSize="small" android:screenDensity="xhdpi" />
+
+        <screen android:screenSize="small" android:screenDensity="ldpi" />
+        <screen android:screenSize="normal" android:screenDensity="mdpi" />
+        <screen android:screenSize="normal" android:screenDensity="hdpi" />
+        <screen android:screenSize="normal" android:screenDensity="xhdpi" />
+    </compatible-screens>
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+
+        <!-- home / search / my
+         TODO home/search/my 는 fragment로 구현.
+         home에는 추천 글 fragment.
+         search에는 카테고리 선택 메뉴 fragment
+         my에는 내가 작성한 글(Image로 저장될 예정) 리스트 fragment
+
+        -->
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Write Activity
+            TODO 글 작성 버튼 클릭시 글 작성 Activity로 전환. 주고 받을 Intent는 없음.
+        -->
+        <activity android:name=".writeActivity">
+        </activity>
+
+        <!-- Read Detail Activity
+            TODO 추천 글. 리스트 등에서 클릭 시 이미지 + 글을 상세하게 보여준다. 주고 받을 Intent는 없음.
+        -->
+        <activity android:name="readActivity">
+        </activity>
+    </application>
+
+</manifest>
