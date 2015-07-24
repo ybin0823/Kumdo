@@ -13,6 +13,8 @@
     <!-- kikat 아래 버전을 위해 갤러리 리스트를 불러오기 위한 Permission -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
+    <!-- [JH] Broadcast Permission 정의도 기획이 있으시면 추가 해주시면 될것 같습니다.-->
+
     <!-- Jelly Bean ~ Lollipop -->
     <uses-sdk
         android:minSdkVersion="16"
