@@ -4,6 +4,9 @@
     android:versionCode="3"
     android:versionName="0.0.3">
 
+
+    <!-- [최성원] PULL REQUEST TEST-->
+
     <!-- Internet 통신을 위한 Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
 
