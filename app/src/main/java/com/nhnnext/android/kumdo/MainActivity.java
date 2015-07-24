@@ -1,7 +1,7 @@
 package com.nhnnext.android.kumdo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
 
 /**
  * 3개의 Fragment로 구성된다
@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity;
  * 2. 두 번째 Fragment는 카테고리 메뉴 View를 보여준다
  * 3. 세 번째 Fragment는 내가 작성한 데이터의 목록을 보여준다
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

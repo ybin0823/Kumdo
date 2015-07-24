@@ -51,6 +51,8 @@
          my에는 내가 작성한 글(Image로 저장될 예정) 리스트 fragment
 
         -->
+
+        <!-- activity 속성 값은 현재 default로 설정 -->
         <activity
             android:allowEmbedded="false"
             android:allowTaskReparenting="false"
@@ -74,15 +76,25 @@
         </activity>
 
         <!-- Write Activity
-            TODO 글 작성 버튼 클릭시 글 작성 Activity로 전환. 주고 받을 Intent는 없음.
+            TODO 글 작성 버튼 클릭시 글 작성 Activity로 전환.
+            글을 작성할 activity이기 때문에 Intent action은 Edit로 설정
         -->
         <activity android:name=".WriteActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!-- Read Detail Activity
-            TODO 추천 글. 리스트 등에서 클릭 시 이미지 + 글을 상세하게 보여준다. 주고 받을 Intent는 없음.
+            TODO 추천 글. 리스트 등에서 클릭 시 이미지 + 글을 상세하게 보여준다.
+            서버에 저장 된 정보를 상세하기 보여줄 activity이기 때문에 Intent action은 View로 설정
         -->
         <activity android:name=".DetailActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

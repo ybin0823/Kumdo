@@ -16,11 +16,15 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        //상세보기 클릭 한 아이템 정보를 서버에서 가져온다 : loadDetail()
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        // Image, Text 등의 View를 그려준다(onResume, onStart, onCreate 중에서 고민)
     }
 
     @Override
