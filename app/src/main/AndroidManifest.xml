@@ -28,6 +28,7 @@
         />
 
     <!-- 요즘 device는 ldpi가 잘 나오지 않기 때문에 고려 하지 않기로 한다 -->
+    <!-- largeScreens 는 true 인데, 아래는 고려 안되어 있네요..검토 필요해보입니다.-->
     <compatible-screens>
         <screen android:screenSize="small" android:screenDensity="mdpi" />
         <screen android:screenSize="small" android:screenDensity="hdpi" />
@@ -53,6 +54,7 @@
         -->
 
         <!-- activity 속성 값은 현재 default로 설정 -->
+        <!-- android:autoRemoveFromRecents="true" 인 기획의도 설명이 필요해보입니다-->
         <activity
             android:allowEmbedded="false"
             android:allowTaskReparenting="false"
