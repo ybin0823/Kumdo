@@ -22,13 +22,13 @@
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_save_black_24dp"
+                android:src="@drawable/ic_save_black_36dp"
                 android:id="@+id/save_button"
                 />
             <ImageButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_image_black_24dp"
+                android:src="@drawable/ic_image_black_36dp"
                 android:id="@+id/image_button"
                 android:layout_below="@id/save_button"
                 />
@@ -45,7 +45,8 @@
             android:layout_above="@id/nature_button"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:text="@string/edit_text" />
+            android:text="@string/edit_text"
+            />
 
         <Button
             android:id="@+id/nature_button"
@@ -54,7 +55,9 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignTop="@+id/abstract_button"
-            android:text="@string/nature_world" />
+            android:text="@string/nature_world"
+            android:background="#ff9900"
+            />
 
         <Button
             android:id="@+id/abstract_button"
@@ -63,7 +66,9 @@
             android:layout_alignTop="@id/concrete_button"
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
-            android:text="@string/abstract_world" />
+            android:text="@string/abstract_world"
+            android:background="#00ffff"
+            />
 
         <Button
             android:id="@+id/concrete_button"
@@ -73,6 +78,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="center_horizontal"
-            android:text="@string/concrete_world" />
+            android:text="@string/concrete_world"
+            android:background="#00ff00"
+            />
     </RelativeLayout>
 </LinearLayout>
