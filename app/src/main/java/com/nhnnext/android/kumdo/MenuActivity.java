@@ -24,11 +24,6 @@ import com.nhnnext.android.kumdo.fragment.MylistFragment;
  */
 public class MenuActivity extends AppCompatActivity {
 
-    /**
-     * TODO FrgmentManager를 사용하여 runtime시에 fragment를 생성
-     */
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,8 +65,18 @@ public class MenuActivity extends AppCompatActivity {
         super.onStart();
     }
 
+    //TODO Fragment 전환 시 ImageButton 동작 안됨
+    //TODO method 중복 심함. 다른 방법 고려
+
+    public void replaceToHome(View view) {
+        BestFragment bestFragment = new BestFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frgment_container, bestFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
     public void replaceToCategory(View view) {
-        Toast.makeText(this, "Category", Toast.LENGTH_SHORT).show();
         CategoryFragment categoryFragment = new CategoryFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.frgment_container, categoryFragment);
