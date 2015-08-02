@@ -18,7 +18,6 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
 
         //상세보기 클릭 한 아이템 정보를 서버에서 가져온다 : loadDetail()
-
     }
 
     @Override

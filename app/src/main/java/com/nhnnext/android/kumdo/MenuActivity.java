@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.nhnnext.android.kumdo.fragment.BestFragment;
 import com.nhnnext.android.kumdo.fragment.CategoryFragment;
@@ -29,14 +28,14 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        if (findViewById(R.id.frgment_container) != null) {
+        if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
                 return;
             }
 
             BestFragment bestFragment = new BestFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.frgment_container, bestFragment).commit();
+                    .add(R.id.fragment_container, bestFragment).commit();
         }
     }
 
@@ -65,13 +64,13 @@ public class MenuActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    //TODO Fragment 전환 시 ImageButton 동작 안됨
+    //TODO Fragment 전환 시 Button 동작 안됨
     //TODO method 중복 심함. 다른 방법 고려
 
     public void replaceToHome(View view) {
         BestFragment bestFragment = new BestFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frgment_container, bestFragment);
+        transaction.replace(R.id.fragment_container, bestFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
@@ -79,16 +78,15 @@ public class MenuActivity extends AppCompatActivity {
     public void replaceToCategory(View view) {
         CategoryFragment categoryFragment = new CategoryFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frgment_container, categoryFragment);
+        transaction.replace(R.id.fragment_container, categoryFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
     public void replaceToMylist(View view) {
-        Toast.makeText(this, "My List", Toast.LENGTH_SHORT).show();
         MylistFragment mylistFragment = new MylistFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.frgment_container, mylistFragment);
+        transaction.replace(R.id.fragment_container, mylistFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }

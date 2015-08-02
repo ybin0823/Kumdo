@@ -1,5 +1,6 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -8,46 +9,39 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
-
-    <!-- fragment를 위한 empty frameLayout -->
-    <FrameLayout
-        android:id="@+id/frgment_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        >
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/home_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:orientation="horizontal">
+            android:text="@string/home"
+            android:onClick="replaceToHome"/>
 
-            <Button
-                android:id="@+id/home_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home"
-                android:onClick="replaceToHome"/>
+        <Button
+            android:id="@+id/category_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="replaceToCategory"
+            android:text="@string/category" />
 
-            <Button
-                android:id="@+id/category_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="replaceToCategory"
-                android:text="@string/category" />
+        <Button
+            android:id="@+id/mylist_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="replaceToMylist"
+            android:text="@string/mylist" />
 
-            <Button
-                android:id="@+id/mylist_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="replaceToMylist"
-                android:text="@string/mylist" />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="changeToWrite"
+            android:src="@drawable/ic_create_black_36dp" />
+    </LinearLayout>
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="changeToWrite"
-                android:src="@drawable/ic_create_black_36dp" />
-        </LinearLayout>
-    </FrameLayout>
-
-</LinearLayout>
+</FrameLayout>
