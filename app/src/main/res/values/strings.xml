@@ -4,6 +4,12 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
+    <!-- activity_menu -->
+    <string name="home">Home</string>
+    <string name="category">Category</string>
+    <string name="mylist">Mylist</string>
+
+    <!-- activity_write -->
     <string name="edit_text">Edit</string>
     <string name="abstract_world">Abstract</string>
     <string name="concrete_world">Concrete</string>

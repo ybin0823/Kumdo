@@ -8,6 +8,7 @@
 
     <!-- fragment를 위한 empty frameLayout -->
     <FrameLayout
+        android:id="@+id/frgment_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -18,18 +19,29 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/home_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Home"
+            android:text="@string/home"
             />
         <Button
+            android:id="@+id/category_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Menu" />
+            android:text="@string/category"
+            android:onClick="replaceToCategory"/>
         <Button
+            android:id="@+id/mylist_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="My"
+            android:text="@string/mylist"
+            android:onClick="replaceToMylist"
+            />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_create_black_36dp"
+            android:onClick="changeToWrite"
             />
     </LinearLayout>
 </LinearLayout>

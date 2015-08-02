@@ -2,17 +2,12 @@ package com.nhnnext.android.kumdo.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.nhnnext.android.kumdo.R;
+import android.widget.ArrayAdapter;
 
 /**
  * Created by jangyoungbin on 15. 7. 23..
  */
-public class CategoryFragment extends Fragment {
+public class CategoryFragment extends android.support.v4.app.ListFragment {
     //fragment는 현재 Lifecycle 공부가 안된 상태이기 때문에 Lifecycle을 넣지 않았습니다.
     //이 fragment는 연애, 학업, 친구 등의 카테고리 목록을 보여줄 예정입니다.
 
@@ -24,11 +19,7 @@ public class CategoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.menu_view, container, false);
+        setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Category.category));
     }
 
     @Override

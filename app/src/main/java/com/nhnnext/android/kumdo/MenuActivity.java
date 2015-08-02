@@ -1,7 +1,15 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Toast;
+
+import com.nhnnext.android.kumdo.fragment.BestFragment;
+import com.nhnnext.android.kumdo.fragment.CategoryFragment;
+import com.nhnnext.android.kumdo.fragment.MylistFragment;
 
 /**
  * 3개의 Fragment로 구성된다
@@ -25,6 +33,16 @@ public class MenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        if (findViewById(R.id.frgment_container) != null) {
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            BestFragment bestFragment = new BestFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.frgment_container, bestFragment).commit();
+        }
     }
 
     @Override
@@ -50,5 +68,28 @@ public class MenuActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    public void replaceToCategory(View view) {
+        Toast.makeText(this, "Category", Toast.LENGTH_SHORT).show();
+        CategoryFragment categoryFragment = new CategoryFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frgment_container, categoryFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void replaceToMylist(View view) {
+        Toast.makeText(this, "My List", Toast.LENGTH_SHORT).show();
+        MylistFragment mylistFragment = new MylistFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.frgment_container, mylistFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void changeToWrite(View view) {
+        Intent intent = new Intent(this, WriteActivity.class);
+        startActivity(intent);
     }
 }
