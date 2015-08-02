@@ -4,12 +4,13 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
-/**
- * Created by jangyoungbin on 15. 7. 23..
+/*
+ * Category Class의 목록을 가져와서 리스트로 보여줄 Fragment기 때문에 굳이 View를 따로 만들지 않고
+ * ListFragment를 상속받아서 사용
+ * Default로 ListView를 return 하므로 onCreateView callback method를 구현할 필요가 없다
  */
+
 public class CategoryFragment extends android.support.v4.app.ListFragment {
-    //fragment는 현재 Lifecycle 공부가 안된 상태이기 때문에 Lifecycle을 넣지 않았습니다.
-    //이 fragment는 연애, 학업, 친구 등의 카테고리 목록을 보여줄 예정입니다.
 
     @Override
     public void onAttach(Activity activity) {
@@ -19,7 +20,9 @@ public class CategoryFragment extends android.support.v4.app.ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, Category.category));
+
+        // android에서 제공하는 기본 list layout을 사용하고, inner Category class의 값을 카테고리 메뉴 리스트로 사용한다
+        setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new Category().category));
     }
 
     @Override
@@ -60,5 +63,14 @@ public class CategoryFragment extends android.support.v4.app.ListFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    private class Category {
+        private String[] category = {
+                "연애/사랑",
+                "우정/친구",
+                "가족",
+                "여행"
+        };
     }
 }

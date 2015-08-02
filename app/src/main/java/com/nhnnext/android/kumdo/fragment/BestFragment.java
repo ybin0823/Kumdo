@@ -10,13 +10,9 @@ import android.view.ViewGroup;
 import com.nhnnext.android.kumdo.R;
 
 /**
- * Created by jangyoungbin on 15. 7. 23..
+ * 서버에서 저장된 데이터 중 최신 데이터(or 추천수가 가장 높은 데이터)를 화면에 뿌려주는 Fragmet
  */
 public class BestFragment extends Fragment {
-
-    //fragment는 현재 Lifecycle 공부가 안된 상태이기 때문에 Lifecycle을 넣지 않았습니다.
-    //이 fragment는 서버에서 최신 Image, Text를 받아와서 View로 보여줄 예정입니다.
-
 
     @Override
     public void onAttach(Activity activity) {
@@ -28,6 +24,7 @@ public class BestFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+    // 현재 서버에서 데이터를 가져오는 부분이 구현이 안되어 있으므로 느낌표 image만 로드된다
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.best_view, container, false);
