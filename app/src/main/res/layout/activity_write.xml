@@ -5,34 +5,31 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/content_container"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:layout_weight="1"
-        android:weightSum="1">
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
-        </View>
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:layout_weight="1">
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        >
 
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_save_black_36dp"
-                android:id="@+id/save_button"
-                />
-            <ImageButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_image_black_36dp"
-                android:id="@+id/image_button"
-                android:layout_below="@id/save_button"
-                />
-        </RelativeLayout>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_save_black_36dp"
+            android:id="@+id/save_button"
+            />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_image_black_36dp"
+            android:id="@+id/image_button"
+            android:layout_below="@id/save_button"
+            />
     </LinearLayout>
 
     <RelativeLayout
@@ -45,6 +42,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:text="@string/edit_text"
+            android:onClick="onClickEditText"
             />
 
         <Button
@@ -56,6 +54,7 @@
             android:layout_below="@id/edit_button"
             android:text="@string/nature_world"
             android:background="#ff9900"
+            android:onClick="test"
             />
 
         <Button

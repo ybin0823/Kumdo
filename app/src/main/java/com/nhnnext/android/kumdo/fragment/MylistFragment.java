@@ -14,12 +14,9 @@ import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
 
 /**
- * Created by jangyoungbin on 15. 7. 23..
+ * 로컬 갤러리에 저장된 이미지를 리스트로 보여주는 Fragment
  */
 public class MylistFragment extends Fragment {
-    // fragment는 현재 Lifecycle 공부가 안된 상태이기 때문에 Lifecycle을 넣지 않았습니다.
-    // 이 fragment는 서버에 업로드 된 자신의 Image, Text 또는 로컬 갤러리에 저장된 (Image+Text)
-    // 리스트를 보여줄 예정입니다.
 
     @Override
     public void onAttach(Activity activity) {
