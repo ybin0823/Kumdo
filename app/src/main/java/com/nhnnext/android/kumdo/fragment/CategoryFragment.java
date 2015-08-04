@@ -2,15 +2,21 @@ package com.nhnnext.android.kumdo.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 /*
  * Category Class의 목록을 가져와서 리스트로 보여줄 Fragment기 때문에 굳이 View를 따로 만들지 않고
  * ListFragment를 상속받아서 사용
  * Default로 ListView를 return 하므로 onCreateView callback method를 구현할 필요가 없다
+ * (출처 : http://developer.android.com/intl/ko/guide/components/fragments.html)
+ * menuActivity에서 v4.FragmentTransaction을 사용하므로, v4.ListFragment를 상속 (`15.08.04 jyb)
  */
 
-public class CategoryFragment extends android.support.v4.app.ListFragment {
+public class CategoryFragment extends ListFragment {
 
     @Override
     public void onAttach(Activity activity) {
@@ -21,6 +27,7 @@ public class CategoryFragment extends android.support.v4.app.ListFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // list view를 위해 ArrayAdapter 생성.
         // android에서 제공하는 기본 list layout을 사용하고, inner Category class의 값을 카테고리 메뉴 리스트로 사용한다
         setListAdapter(new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, new Category().category));
     }
@@ -63,6 +70,12 @@ public class CategoryFragment extends android.support.v4.app.ListFragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+        Toast.makeText(getActivity(), l.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
     }
 
     private class Category {

@@ -28,11 +28,15 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        // fragment를 위한 FrameLayout 이 있는지 체크
         if (findViewById(R.id.fragment_container) != null) {
+
+            // 이전에 저장된 상태가 있다면 굳이 아래를 실행할 필요가 없기에 return
             if (savedInstanceState != null) {
                 return;
             }
 
+            // App 시작 시 첫 Fragment Instance 생성
             BestFragment bestFragment = new BestFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, bestFragment).commit();
@@ -64,7 +68,6 @@ public class MenuActivity extends AppCompatActivity {
         super.onStart();
     }
 
-    //TODO Fragment 전환 시 Button 동작 안됨
     //TODO method 중복 심함. 다른 방법 고려
 
     public void replaceToHome(View view) {
