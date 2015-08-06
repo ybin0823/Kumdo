@@ -1,5 +1,6 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -19,7 +20,7 @@ import java.util.Random;
  * 4. 저장하기를 누르면 내용이 서버로 전송된다
  */
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final String TAG = WriteActivity.class.getName();
+    private static final String TAG = "WriteActivity";
 
     LinearLayout container;
     Button concreteButton;
@@ -136,6 +137,14 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
         Toast.makeText(this, sentence, Toast.LENGTH_SHORT).show();
+    }
+
+    public void loadImagefromGallery(View view) {
+        // Create intent to Open Image applications like Gallery, Google Photos
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Start the Intent
+        startActivityForResult(galleryIntent, 1);
     }
 
     // 추후에는 Server 내에 word table을 유지할 예정

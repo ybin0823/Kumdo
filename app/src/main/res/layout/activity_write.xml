@@ -30,6 +30,7 @@
             android:src="@drawable/ic_image_black_36dp"
             android:id="@+id/image_button"
             android:layout_below="@id/save_button"
+            android:onClick="loadImagefromGallery"
             />
     </LinearLayout>
 
