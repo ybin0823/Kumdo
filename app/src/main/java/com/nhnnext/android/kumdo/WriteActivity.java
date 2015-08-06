@@ -3,10 +3,12 @@ package com.nhnnext.android.kumdo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
@@ -84,8 +86,11 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
      * method : onClickEditText()
      * edit 버튼을 클릭하면 화면에 editText창을 생성
      */
-    public void onClickEditText(View view) {
+    public void onClickEditText(View v) {
         EditText mEditText = new EditText(this);
+        mEditText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        mEditText.requestFocus();
         container.addView(mEditText);
     }
 
@@ -114,16 +119,35 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         container.addView(mTextView);
     }
 
+    public void onClickSave(View v) {
+        int count = container.getChildCount();
+
+        String sentence = "";
+        TextView tv;
+        for (int i = 0; i < count; i++) {
+            tv = (TextView) container.getChildAt(i);
+
+            //TODO String class에서 += 를 쓰는 것이 좋은 방법인지 찾아볼 것
+            sentence += tv.getText().toString();
+        }
+
+        if(sentence.isEmpty()) {
+            Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(this, sentence, Toast.LENGTH_SHORT).show();
+    }
+
     // 추후에는 Server 내에 word table을 유지할 예정
     private class Word {
         private String [] abstractWorld = {
-                "우정", "기쁨", "사랑", "따뜻", "냉정"
+                "love", "pleasure", "happy", "sadness", "angry"
         };
         private String [] concreteWorld = {
-                "책", "병", "피자", "치킨", "운동"
+                "book", "hand", "chicken", "bus", "pencil"
         };
         private String [] natureWorld = {
-                "해", "물", "바다", "강", "산"
+                "sun", "water", "sea", "river", "mouatain"
         };
     }
 }
