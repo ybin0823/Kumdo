@@ -1,9 +1,9 @@
 package com.nhnnext.android.kumdo;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.nhn.android.naverlogin.OAuthLogin;
@@ -14,7 +14,7 @@ import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 /**
  * 네이버 아이디로 로그인 기능을 위한 Activity
  */
-public class OAuthActivity extends AppCompatActivity {
+public class OAuthActivity extends Activity {
     private static final String TAG = "OAuthActivity";
 
     /**

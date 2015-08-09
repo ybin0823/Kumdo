@@ -1,8 +1,8 @@
 package com.nhnnext.android.kumdo;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,7 +19,7 @@ import java.util.Random;
  * 3. 단어를 클릭하면 EditText 뒤에 단어가 생성된다
  * 4. 저장하기를 누르면 내용이 서버로 전송된다
  */
-public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
+public class WriteActivity extends Activity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
 
     LinearLayout container;
@@ -41,6 +41,8 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         natureButton.setOnClickListener(this);
 
         container = (LinearLayout)findViewById(R.id.content_container);
+
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

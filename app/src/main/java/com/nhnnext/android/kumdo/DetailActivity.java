@@ -1,7 +1,7 @@
 package com.nhnnext.android.kumdo;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 
 /**
  * 1. 현재 클릭 된 아이템의 ID(Intent로 구현할지 다른 방법을 사용할지는 추후 논의)를 받는다
@@ -10,7 +10,7 @@ import android.support.v7.app.AppCompatActivity;
  * 4. 댓글을 달 수 있다.
  * 5. 좋아요를 누를 수 있다.
  */
-public class DetailActivity extends AppCompatActivity {
+public class DetailActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

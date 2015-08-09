@@ -1,9 +1,12 @@
 package com.nhnnext.android.kumdo;
 
+import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.nhnnext.android.kumdo.fragment.BestFragment;
@@ -21,7 +24,7 @@ import com.nhnnext.android.kumdo.fragment.MylistFragment;
  * FragmentActivity는 API Level 11 이하 버전에서 fragment를 사용하기 위해 Support Library를 지원하는
  * Activity이다. min sdk가 16이므로 Activity클래스로도 충분해서 수정 `15.07.30 by jyb
  */
-public class MenuActivity extends AppCompatActivity {
+public class MenuActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +41,7 @@ public class MenuActivity extends AppCompatActivity {
 
             // App 시작 시 첫 Fragment Instance 생성
             BestFragment bestFragment = new BestFragment();
-            getSupportFragmentManager().beginTransaction()
+            getFragmentManager().beginTransaction()
                     .add(R.id.fragment_container, bestFragment).commit();
         }
     }
@@ -72,7 +75,7 @@ public class MenuActivity extends AppCompatActivity {
 
     public void replaceToHome(View view) {
         BestFragment bestFragment = new BestFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, bestFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -80,7 +83,7 @@ public class MenuActivity extends AppCompatActivity {
 
     public void replaceToCategory(View view) {
         CategoryFragment categoryFragment = new CategoryFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, categoryFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -88,7 +91,7 @@ public class MenuActivity extends AppCompatActivity {
 
     public void replaceToMylist(View view) {
         MylistFragment mylistFragment = new MylistFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, mylistFragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -97,5 +100,37 @@ public class MenuActivity extends AppCompatActivity {
     public void changeToWrite(View view) {
         Intent intent = new Intent(this, WriteActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_write:
+                openWrite();
+                return true;
+            case R.id.action_settings:
+                openSettings();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void openWrite() {
+        Intent intent = new Intent(this, WriteActivity.class);
+        startActivity(intent);
+    }
+
+    private void openSettings() {
+        //TODO setting Activity로 전환
     }
 }
