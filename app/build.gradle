@@ -8,8 +8,8 @@ android {
         applicationId "com.nhnnext.android.kumdo"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        versionCode 18
+        versionName "0.1.8"
     }
     buildTypes {
         release {
