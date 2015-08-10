@@ -42,7 +42,6 @@ public class WriteActivity extends Activity implements View.OnClickListener {
 
         container = (LinearLayout)findViewById(R.id.content_container);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

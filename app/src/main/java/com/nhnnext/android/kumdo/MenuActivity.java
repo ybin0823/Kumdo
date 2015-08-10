@@ -31,6 +31,8 @@ public class MenuActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
+        getActionBar().setDisplayShowHomeEnabled(false);
+
         // fragment를 위한 FrameLayout 이 있는지 체크
         if (findViewById(R.id.fragment_container) != null) {
 
@@ -74,6 +76,7 @@ public class MenuActivity extends Activity {
     //TODO method 중복 심함. 다른 방법 고려
 
     public void replaceToHome(View view) {
+        getActionBar().setTitle("홈");
         BestFragment bestFragment = new BestFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, bestFragment);
@@ -82,6 +85,7 @@ public class MenuActivity extends Activity {
     }
 
     public void replaceToCategory(View view) {
+        getActionBar().setTitle("카테고리");
         CategoryFragment categoryFragment = new CategoryFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, categoryFragment);
@@ -90,6 +94,7 @@ public class MenuActivity extends Activity {
     }
 
     public void replaceToMylist(View view) {
+        getActionBar().setTitle("내 목록");
         MylistFragment mylistFragment = new MylistFragment();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.fragment_container, mylistFragment);
