@@ -2,7 +2,9 @@ package com.nhnnext.android.kumdo;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -33,6 +35,14 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle("글쓰기");
 
         concreteButton = (Button) findViewById(R.id.concrete_button);
         abstractButton = (Button) findViewById(R.id.abstract_button);

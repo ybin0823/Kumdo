@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -15,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.nhnnext.android.kumdo.fragment.BestFragment;
 import com.nhnnext.android.kumdo.fragment.CategoryFragment;
@@ -37,7 +37,6 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        Toast.makeText(this, "here", Toast.LENGTH_SHORT).show();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -59,6 +58,10 @@ public class MenuActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_home_white_36dp).setText("");
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_list_white_36dp).setText("");
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_collections_white_36dp).setText("");
+
     }
 
     @Override
@@ -73,6 +76,9 @@ public class MenuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            case android.R.id.home:
+                mDrawerLayout.openDrawer(GravityCompat.START);
+                return true;
             case R.id.action_write:
                 openWrite();
                 return true;
@@ -116,7 +122,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
-        private final List<String> mFragmentTitles = new ArrayList<>();
+        private final List<String> mFragmentsTitle = new ArrayList<>();
 
         public Adapter(FragmentManager fm) {
             super(fm);
@@ -124,7 +130,7 @@ public class MenuActivity extends AppCompatActivity {
 
         public void addFragment(Fragment fragment, String title) {
             mFragments.add(fragment);
-            mFragmentTitles.add(title);
+            mFragmentsTitle.add(title);
         }
 
         @Override
@@ -139,7 +145,7 @@ public class MenuActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitles.get(position);
+            return mFragmentsTitle.get(position);
         }
     }
 }
