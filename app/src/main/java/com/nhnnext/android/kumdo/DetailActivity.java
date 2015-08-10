@@ -1,7 +1,7 @@
 package com.nhnnext.android.kumdo;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * 1. 현재 클릭 된 아이템의 ID(Intent로 구현할지 다른 방법을 사용할지는 추후 논의)를 받는다
@@ -9,8 +9,10 @@ import android.os.Bundle;
  * 3. Image와 Text로 View를 그려준다
  * 4. 댓글을 달 수 있다.
  * 5. 좋아요를 누를 수 있다.
+ * MenuActivity가 AppCompatActivity를 상속받아야 한다.
+ * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.10 by jyb)
  */
-public class DetailActivity extends Activity {
+public class DetailActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

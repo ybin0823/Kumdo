@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
-    android:versionCode="20"
-    android:versionName="0.2.0">
+    android:versionCode="21"
+    android:versionName="0.2.1">
 
     <!-- Internet 통신을 위한 Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -73,7 +73,7 @@
             android:hardwareAccelerated="false"
             android:name=".MenuActivity"
             android:label="@string/app_name"
-            android:launchMode="standard"
+            android:launchMode="singleTop"
             >
         </activity>
 

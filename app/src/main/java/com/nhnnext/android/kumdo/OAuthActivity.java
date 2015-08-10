@@ -1,9 +1,9 @@
 package com.nhnnext.android.kumdo;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.nhn.android.naverlogin.OAuthLogin;
@@ -13,8 +13,10 @@ import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
 
 /**
  * 네이버 아이디로 로그인 기능을 위한 Activity
+ * MenuActivity가 AppCompatActivity를 상속받아야 한다.
+ * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.10 by jyb)
  */
-public class OAuthActivity extends Activity {
+public class OAuthActivity extends AppCompatActivity {
     private static final String TAG = "OAuthActivity";
 
     /**
@@ -68,7 +70,5 @@ public class OAuthActivity extends Activity {
                         + ", errorDesc:" + errorDesc, Toast.LENGTH_SHORT).show();
             }
         }
-
-        ;
     };
 }

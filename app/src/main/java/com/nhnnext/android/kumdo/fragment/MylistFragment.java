@@ -1,9 +1,9 @@
 package com.nhnnext.android.kumdo.fragment;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +15,7 @@ import com.nhnnext.android.kumdo.R;
 
 /**
  * 로컬 갤러리에 저장된 이미지를 리스트로 보여주는 Fragment
+ * Tab Layout을 위해 ViewPager를 사용. 따라서 v4.Fragment를 상속받는다(`15.08.10 by jyb)
  */
 public class MylistFragment extends Fragment {
 

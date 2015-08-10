@@ -1,8 +1,8 @@
 package com.nhnnext.android.kumdo;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -18,8 +18,10 @@ import java.util.Random;
  * 2. EditText를 클릭하면 글을 입력할 수 있는 창이 생성 된다
  * 3. 단어를 클릭하면 EditText 뒤에 단어가 생성된다
  * 4. 저장하기를 누르면 내용이 서버로 전송된다
+ * MenuActivity가 AppCompatActivity를 상속받아야 한다.
+ * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.10 by jyb)
  */
-public class WriteActivity extends Activity implements View.OnClickListener {
+public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
 
     LinearLayout container;

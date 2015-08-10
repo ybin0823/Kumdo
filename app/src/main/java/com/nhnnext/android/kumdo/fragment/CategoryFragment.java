@@ -1,19 +1,19 @@
 package com.nhnnext.android.kumdo.fragment;
 
 import android.app.Activity;
-import android.app.ListFragment;
 import android.os.Bundle;
+import android.support.v4.app.ListFragment;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-/*
+/**
  * Category Class의 목록을 가져와서 리스트로 보여줄 Fragment기 때문에 굳이 View를 따로 만들지 않고
  * ListFragment를 상속받아서 사용
  * Default로 ListView를 return 하므로 onCreateView callback method를 구현할 필요가 없다
  * (출처 : http://developer.android.com/intl/ko/guide/components/fragments.html)
- * menuActivity에서 v4.FragmentTransaction을 사용하므로, v4.ListFragment를 상속 (`15.08.04 jyb)
+ * Tab Layout을 위해 ViewPager를 사용. 따라서 v4.Fragment를 상속받는다(`15.08.10 by jyb)
  */
 
 public class CategoryFragment extends ListFragment {
