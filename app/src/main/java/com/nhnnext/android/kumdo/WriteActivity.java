@@ -42,7 +42,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("글쓰기");
+        actionBar.setTitle("Write");
 
         concreteButton = (Button) findViewById(R.id.concrete_button);
         abstractButton = (Button) findViewById(R.id.abstract_button);

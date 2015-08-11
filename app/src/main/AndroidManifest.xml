@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
-    android:versionCode="22"
-    android:versionName="0.2.2">
+    android:versionCode="23"
+    android:versionName="0.2.3">
 
     <!-- Internet 통신을 위한 Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,33 +20,45 @@
 
     <!-- xlargeScreens은 태블릿이기 때문에 고려 안하기로 한다 -->
     <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
         android:resizeable="true"
         android:smallScreens="true"
-        android:largeScreens="true"
-        android:xlargeScreens="false"
-        android:anyDensity="true"
-        />
+        android:xlargeScreens="false" />
 
     <!-- 요즘 device는 ldpi가 잘 나오지 않기 때문에 고려 하지 않기로 한다 -->
     <compatible-screens>
-        <screen android:screenSize="small" android:screenDensity="mdpi" />
-        <screen android:screenSize="small" android:screenDensity="hdpi" />
-        <screen android:screenSize="small" android:screenDensity="xhdpi" />
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="small" />
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="small" />
 
-        <screen android:screenSize="normal" android:screenDensity="mdpi" />
-        <screen android:screenSize="normal" android:screenDensity="hdpi" />
-        <screen android:screenSize="normal" android:screenDensity="xhdpi" />
+        <screen
+            android:screenDensity="mdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="hdpi"
+            android:screenSize="normal" />
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="normal" />
     </compatible-screens>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <activity android:name=".OAuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -61,6 +73,7 @@
 
         <!-- activity 속성 값은 현재 default로 설정 -->
         <activity
+            android:name=".MenuActivity"
             android:allowEmbedded="false"
             android:allowTaskReparenting="false"
             android:alwaysRetainTaskState="false"
@@ -71,16 +84,14 @@
             android:exported="true"
             android:finishOnTaskLaunch="false"
             android:hardwareAccelerated="false"
-            android:name=".MenuActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            >
-        </activity>
+            android:launchMode="singleTop"></activity>
 
         <!-- Write Activity
             글을 작성할 activity이기 때문에 Intent action은 Edit로 설정
         -->
-        <activity android:name=".WriteActivity"
+        <activity
+            android:name=".WriteActivity"
             android:parentActivityName=".MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
@@ -95,18 +106,25 @@
             TODO 추천 글. 리스트 등에서 클릭 시 이미지 + 글을 상세하게 보여준다.
             서버에 저장 된 정보를 상세하기 보여줄 activity이기 때문에 Intent action은 View로 설정
         -->
-        <activity android:name=".DetailActivity">
+        <activity
+            android:name=".DetailActivity"
+            android:parentActivityName=".MenuActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MenuActivity" />
         </activity>
 
         <!-- [naveroauthlogin][start] 네이버 아이디로 로그인에서 사용하는 액티비티를 등록 -->
-        <activity android:name="com.nhn.android.naverlogin.ui.OAuthLoginActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
-        <activity android:name="com.nhn.android.naverlogin.ui.OAuthLoginInAppBrowserActivity"
-            android:label="OAuth2.0 In-app"/>
+        <activity
+            android:name="com.nhn.android.naverlogin.ui.OAuthLoginActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity
+            android:name="com.nhn.android.naverlogin.ui.OAuthLoginInAppBrowserActivity"
+            android:label="OAuth2.0 In-app" />
         <!-- [naveroauthlogin][end] -->
     </application>
 
