@@ -43,6 +43,7 @@ public class MenuActivity extends AppCompatActivity {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.home);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -100,11 +101,25 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new BestFragment(), "홈");
-        adapter.addFragment(new CategoryFragment(), "카테고리");
-        adapter.addFragment(new MylistFragment(), "내 목록");
+        final Adapter adapter = new Adapter(getSupportFragmentManager());
+        adapter.addFragment(new BestFragment(), "Home");
+        adapter.addFragment(new CategoryFragment(), "Category");
+        adapter.addFragment(new MylistFragment(), "My List");
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                getSupportActionBar().setTitle(adapter.getPageTitle(position));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
