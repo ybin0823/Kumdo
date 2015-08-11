@@ -63,6 +63,9 @@ public class OAuthActivity extends AppCompatActivity {
             if (success) {
                 Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
+
+                // 로그인 후 Back Stack에 Activity가 쌓이지 않기 위해
+                finish();
             } else {
                 String errorCode = mOAuthLoginInstance.getLastErrorCode(mContext).getCode();
                 String errorDesc = mOAuthLoginInstance.getLastErrorDesc(mContext);
