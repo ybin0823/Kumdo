@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.nhnnext.android.kumdo.R;
 
@@ -28,7 +29,9 @@ public class BestFragment extends Fragment {
     // 현재 서버에서 데이터를 가져오는 부분이 구현이 안되어 있으므로 느낌표 image만 로드된다
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.best_view, container, false);
+        ListView lv = (ListView) inflater.inflate(R.layout.best_view, container, false);
+        lv.setAdapter(new ImageAdapter(getActivity()));
+        return lv;
     }
 
     @Override

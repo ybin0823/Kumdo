@@ -8,8 +8,8 @@ android {
         applicationId "com.nhnnext.android.kumdo"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 18
-        versionName "0.1.8"
+        versionCode 24
+        versionName "0.2.4"
     }
     buildTypes {
         release {
@@ -22,8 +22,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files('libs/3rdparty_login_library_android_4.1.4.jar')
-
-//    design support library가 v4, v7 library를 포함
+    // design support library가 v4, v7 library를 포함
     compile 'com.android.support:design:22.2.1'
-
 }
