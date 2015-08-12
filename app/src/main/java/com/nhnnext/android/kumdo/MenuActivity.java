@@ -30,6 +30,10 @@ import java.util.List;
  * 아랫 버전 호환을 위해 AppCompatActivity로 상속(`15.08.10 by jyb)
  */
 public class MenuActivity extends AppCompatActivity {
+    public static final String EMPTY_TITLE = "";
+    public static final String HOME = "Home";
+    public static final String CATEGORY = "Category";
+    public static final String MY_LIST = "My List";
     private DrawerLayout mDrawerLayout;
 
     @Override
@@ -37,21 +41,15 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initActionBar();
 
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.home);
+        initNavigation();
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        initTabView();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        if (navigationView != null) {
-            setupDrawerContent(navigationView);
-        }
+    }
 
+    private void initTabView() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager != null) {
             setupViewPager(viewPager);
@@ -59,10 +57,28 @@ public class MenuActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_home_white_36dp).setText("");
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_list_white_36dp).setText("");
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_collections_white_36dp).setText("");
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_home_white_36dp).setText(EMPTY_TITLE);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_list_white_36dp).setText(EMPTY_TITLE);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_collections_white_36dp).setText(EMPTY_TITLE);
+    }
 
+    private void initNavigation() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        if (navigationView != null) {
+            setupDrawerContent(navigationView);
+        }
+    }
+
+    private void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.home);
     }
 
     @Override
@@ -102,9 +118,9 @@ public class MenuActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         final Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new BestFragment(), "Home");
-        adapter.addFragment(new CategoryFragment(), "Category");
-        adapter.addFragment(new MylistFragment(), "My List");
+        adapter.addFragment(new BestFragment(), HOME);
+        adapter.addFragment(new CategoryFragment(), CATEGORY);
+        adapter.addFragment(new MylistFragment(), MY_LIST);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -139,8 +155,8 @@ public class MenuActivity extends AppCompatActivity {
         private final List<Fragment> mFragments = new ArrayList<>();
         private final List<String> mFragmentsTitle = new ArrayList<>();
 
-        public Adapter(FragmentManager fm) {
-            super(fm);
+        public Adapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
         }
 
         public void addFragment(Fragment fragment, String title) {

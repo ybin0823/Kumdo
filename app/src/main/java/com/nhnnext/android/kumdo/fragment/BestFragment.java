@@ -26,12 +26,11 @@ public class BestFragment extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
-    // 현재 서버에서 데이터를 가져오는 부분이 구현이 안되어 있으므로 느낌표 image만 로드된다
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        ListView lv = (ListView) inflater.inflate(R.layout.best_view, container, false);
-        lv.setAdapter(new ImageAdapter(getActivity()));
-        return lv;
+        ListView listView = (ListView) inflater.inflate(R.layout.best_view, container, false);
+        listView.setAdapter(new ImageAdapter(getActivity()));
+        return listView;
     }
 
     @Override

@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import com.nhnnext.android.kumdo.R;
 
 /**
- * Created by jangyoungbin on 15. 8. 2..
+ * 현재는 서버없이 Resource에 저장 된 이미지를 사용한다
+ * TODO GridView, ListView에서 혼용하므로 역할에 따라 분리하거나 처리해주는 것이 필요
  */
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;

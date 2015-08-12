@@ -22,7 +22,7 @@ import android.widget.Toast;
 import java.util.Random;
 
 /**
- * 1. Server에서 단어를 Random하게 불러와야 한다
+ * 1. Server에서 단어를 Random하게 불러와야 한다(TODO 서버에서 가져올지, 로컬이 보유할지 설계 고민해볼 것)
  * 2. EditText를 클릭하면 글을 입력할 수 있는 창이 생성 된다
  * 3. 단어를 클릭하면 EditText 뒤에 단어가 생성된다
  * 4. 저장하기를 누르면 내용이 서버로 전송된다
@@ -31,17 +31,38 @@ import java.util.Random;
  */
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
+    public static final int LOAD_FROM_GALLERY = 1;
 
-    private LinearLayout container;
-    private Button concreteButton;
-    private Button abstractButton;
-    private Button natureButton;
+    private LinearLayout mContainer;
+    private Button mConcreteButton;
+    private Button mAbstractButton;
+    private Button mNatureButton;
+    private ImageView mImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
 
+        initActionBar();
+
+        initView();
+    }
+
+    private void initView() {
+        mConcreteButton = (Button) findViewById(R.id.concrete_button);
+        mAbstractButton = (Button) findViewById(R.id.abstract_button);
+        mNatureButton = (Button) findViewById(R.id.nature_button);
+
+        mConcreteButton.setOnClickListener(this);
+        mAbstractButton.setOnClickListener(this);
+        mNatureButton.setOnClickListener(this);
+
+        mContainer = (LinearLayout)findViewById(R.id.content_container);
+        mImageView = (ImageView) findViewById(R.id.image_view);
+    }
+
+    private void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -49,25 +70,15 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Write");
-
-        concreteButton = (Button) findViewById(R.id.concrete_button);
-        abstractButton = (Button) findViewById(R.id.abstract_button);
-        natureButton = (Button) findViewById(R.id.nature_button);
-
-        concreteButton.setOnClickListener(this);
-        abstractButton.setOnClickListener(this);
-        natureButton.setOnClickListener(this);
-
-        container = (LinearLayout)findViewById(R.id.content_container);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Word word = new Word();
-        concreteButton.setText(word.concreteWorld[new Random().nextInt(5)]);
-        abstractButton.setText(word.abstractWorld[new Random().nextInt(5)]);
-        natureButton.setText(word.natureWorld[new Random().nextInt(5)]);
+        mConcreteButton.setText(word.concreteWorld[new Random().nextInt(5)]);
+        mAbstractButton.setText(word.abstractWorld[new Random().nextInt(5)]);
+        mNatureButton.setText(word.natureWorld[new Random().nextInt(5)]);
     }
 
     @Override
@@ -110,13 +121,13 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         mEditText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         mEditText.requestFocus();
-        container.addView(mEditText);
+        //TODO editText 클릭시 soft keyboard 출력
+        mContainer.addView(mEditText);
     }
 
     /**
-     * method : onClickWord()
      * parameter : click된 버튼 id
-     * editText 안(or 옆)에 현재 클릭된 단어를 삽입한다
+     * editText 옆에 현재 클릭된 단어를 삽입한다
      */
     @Override
     public void onClick(View v) {
@@ -136,18 +147,18 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         Log.d("word", word);
         TextView mTextView= new TextView(this);
         mTextView.setText(word);
-        container.addView(mTextView);
+        mContainer.addView(mTextView);
     }
 
     public void onClickSave(View v) {
-        int count = container.getChildCount();
+        int count = mContainer.getChildCount();
 
         String sentence = "";
         TextView tv;
         for (int i = 0; i < count; i++) {
-            tv = (TextView) container.getChildAt(i);
+            tv = (TextView) mContainer.getChildAt(i);
 
-            //TODO String class에서 += 를 쓰는 것이 좋은 방법인지 찾아볼 것
+            //TODO StringBuilder로 변경
             sentence += tv.getText().toString();
         }
 
@@ -162,22 +173,23 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         // Google의 기본 Galley Application 실행
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, 1);
+        startActivityForResult(galleryIntent, LOAD_FROM_GALLERY);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == RESULT_OK) {
+        if (requestCode == LOAD_FROM_GALLERY && resultCode == RESULT_OK) {
             Uri selectedImage = data.getData();
+
             String[] filePathColumn = { MediaStore.Images.Media.DATA };
             Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
             cursor.moveToFirst();
             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
             String picturePath = cursor.getString(columnIndex);
             cursor.close();
-            ImageView imageView = (ImageView) findViewById(R.id.image_view);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+
+            mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            mImageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
         }
     }
 
