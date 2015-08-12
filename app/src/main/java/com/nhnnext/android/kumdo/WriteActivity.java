@@ -1,14 +1,20 @@
 package com.nhnnext.android.kumdo;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,10 +32,10 @@ import java.util.Random;
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
 
-    LinearLayout container;
-    Button concreteButton;
-    Button abstractButton;
-    Button natureButton;
+    private LinearLayout container;
+    private Button concreteButton;
+    private Button abstractButton;
+    private Button natureButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,6 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         natureButton.setOnClickListener(this);
 
         container = (LinearLayout)findViewById(R.id.content_container);
-
     }
 
     @Override
@@ -128,6 +133,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     public void addWord(View v) {
         Button button = (Button) v;
         String word = button.getText().toString();
+        Log.d("word", word);
         TextView mTextView= new TextView(this);
         mTextView.setText(word);
         container.addView(mTextView);
@@ -153,11 +159,26 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void loadImagefromGallery(View view) {
-        // Create intent to Open Image applications like Gallery, Google Photos
+        // Google의 기본 Galley Application 실행
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Start the Intent
         startActivityForResult(galleryIntent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            Uri selectedImage = data.getData();
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String picturePath = cursor.getString(columnIndex);
+            cursor.close();
+            ImageView imageView = (ImageView) findViewById(R.id.image_view);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        }
     }
 
     // 추후에는 Server 내에 word table을 유지할 예정
