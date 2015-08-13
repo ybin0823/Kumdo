@@ -173,7 +173,12 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         // Google의 기본 Galley Application 실행
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(galleryIntent, LOAD_FROM_GALLERY);
+
+        // if you call startActivityForResult() using an intent that no app can handle,
+        // your app will crash. So as long as the result is not null, it's safe to use the intent.
+        if (galleryIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(galleryIntent, LOAD_FROM_GALLERY);
+        }
     }
 
     @Override
