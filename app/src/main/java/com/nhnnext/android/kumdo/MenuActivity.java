@@ -113,7 +113,8 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void openSettings() {
-        //TODO setting Activity로 전환
+        Intent intent = new Intent(this, SettingActivity.class);
+        startActivity(intent);
     }
 
     private void setupViewPager(ViewPager viewPager) {

@@ -15,4 +15,7 @@
     <string name="abstract_world">Abstract</string>
     <string name="concrete_world">Concrete</string>
     <string name="nature_world">Nature</string>
+
+    <!-- activity_setting -->
+    <string name="logout">Logout</string>
 </resources>

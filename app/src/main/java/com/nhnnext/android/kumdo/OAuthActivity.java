@@ -26,8 +26,8 @@ public class OAuthActivity extends AppCompatActivity {
     private static String OAUTH_CLIENT_SECRET = "RSWJ9fqF1K";
     private static String OAUTH_CLIENT_NAME = "백일장";
 
-    private static OAuthLogin mOAuthLoginInstance;
-    private static Context mContext;
+    private OAuthLogin mOAuthLoginInstance;
+    private Context mContext;
 
     private OAuthLoginButton mOAuthLoginButton;
 

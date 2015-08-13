@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
-    android:versionCode="29"
-    android:versionName="0.2.9">
+    android:versionCode="30"
+    android:versionName="0.3.0">
 
     <!-- Internet 통신을 위한 Permission -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -121,6 +121,13 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MenuActivity" />
+        </activity>
+
+        <activity android:name=".SettingActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!-- [naveroauthlogin][start] 네이버 아이디로 로그인에서 사용하는 액티비티를 등록 -->
