@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
  */
 public class DetailActivity extends AppCompatActivity {
 
+    public static final String IMAGE_DATA_EXTRA = "extra_image";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
