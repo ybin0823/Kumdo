@@ -15,7 +15,6 @@ import java.net.URL;
 public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
     private static final String TAG = "BitmapWorkerTask";
     private final WeakReference<ImageView> imageViewReference;
-    private String url;
 
     public BitmapWorkerTask(ImageView imageView) {
         // Use a WeakReference to ensure the ImageView can be garbage collected
@@ -30,7 +29,9 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
         try {
             HttpURLConnection conn = (HttpURLConnection )new URL(params[0]).openConnection();
             InputStream is = conn.getInputStream();
-            return BitmapFactory.decodeStream(is);
+
+            return decodeSampledBitmapFromStream(is, 100, 100);
+//            return BitmapFactory.decodeStream(is);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -46,5 +47,39 @@ public class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
                 imageView.setImageBitmap(bitmap);
             }
         }
+    }
+
+    public Bitmap decodeSampledBitmapFromStream(InputStream is, int reqWidth, int reqHeight) {
+        Log.d(TAG, "decodeSampledBitmapFromStream - resizing bitmap");
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+//        options.inJustDecodeBounds = true;
+//        BitmapFactory.decodeStream(is, null, options);
+//
+//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = 8;
+
+        return BitmapFactory.decodeStream(is, null, options);
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqHeight) {
+            int halfHeight = height / 2;
+            int halfWidth = width / 2;
+
+            while ((halfHeight / inSampleSize) > reqHeight &&
+                    (halfWidth / inSampleSize) > reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        Log.d(TAG, "inSampleSize - " + inSampleSize);
+        return inSampleSize;
     }
 }

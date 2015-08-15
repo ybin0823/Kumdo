@@ -28,7 +28,12 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     public final static String[] imageUrls = {
             "http://192.168.2.109:3000/uploads/1.jpg",
             "http://192.168.2.109:3000/uploads/2.jpg",
-            "http://192.168.2.109:3000/uploads/3.jpg"
+            "http://192.168.2.109:3000/uploads/3.jpg",
+            "http://192.168.2.109:3000/uploads/4.jpg",
+            "http://192.168.2.109:3000/uploads/5.jpg",
+            "http://192.168.2.109:3000/uploads/6.jpg",
+            "http://192.168.2.109:3000/uploads/7.jpg",
+            "http://192.168.2.109:3000/uploads/8.jpg"
     };
 
     @Override
