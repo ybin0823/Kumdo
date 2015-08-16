@@ -105,9 +105,12 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private class ImageAdapter extends BaseAdapter {
         private final Context mContext;
+        private ListView.LayoutParams mImageViewLayoutParams;
 
         public ImageAdapter(Context context) {
             this.mContext = context;
+            mImageViewLayoutParams = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    350);
         }
         @Override
         public int getCount() {
@@ -130,6 +133,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             if (convertView == null) {
                 imageView = new ImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(mImageViewLayoutParams);
             } else {
                 imageView = (ImageView) convertView;
             }

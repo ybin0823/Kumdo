@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -22,7 +24,10 @@ import com.nhnnext.android.kumdo.util.BitmapWorkerTask;
  * Tab Layout을 위해 ViewPager를 사용. 따라서 v4.Fragment를 상속받는다(`15.08.10 by jyb)
  */
 public class MylistFragment extends Fragment implements AdapterView.OnItemClickListener {
+    private static final String TAG = "MylistFragment";
     private ImageAdapter mAdapter;
+
+    private int mImageSize;
 
     // local image server url for test
     public final static String[] imageUrls = {
@@ -44,15 +49,39 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mImageSize = getResources().getDimensionPixelSize(R.dimen.image_size);
         mAdapter = new ImageAdapter(getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mylist_view, container, false);
-        GridView gridview = (GridView) view.findViewById(R.id.grid_view);
-        gridview.setAdapter(mAdapter);
-        gridview.setOnItemClickListener(this);
+        final GridView mGridView = (GridView) view.findViewById(R.id.grid_view);
+        mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(this);
+
+        // This listener is used to get the final width of the GridView and then calculate the
+        // number of columns and the width of each column. The width of each column is variable
+        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
+        // of each view so we get nice square thumbnails.
+        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if(mAdapter.getNumColumn() == 0) {
+                            final int numColumns = (int) Math.floor(
+                                    mGridView.getWidth() / mImageSize);
+                            if (numColumns > 0) {
+                                int columnWidth = mGridView.getWidth() / numColumns;
+                                mAdapter.setNumColumns(numColumns);
+                                mAdapter.setItemHeight(columnWidth);
+                                Log.d(TAG, "numColumns : " + numColumns);
+                                Log.d(TAG, "width, height : " + columnWidth);
+                            }
+                        }
+                    }
+                }
+        );
         return view;
     }
 
@@ -104,10 +133,16 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     }
 
     private class ImageAdapter extends BaseAdapter {
+        private static final String TAG = "ImageAdapter";
         private final Context mContext;
+        private GridView.LayoutParams mImageViewLayoutParams;
+        private int mNumColumns = 0;
+        private int mItemHeight = 0;
 
         public ImageAdapter(Context context) {
             this.mContext = context;
+            mImageViewLayoutParams = new GridView.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         @Override
         public int getCount() {
@@ -130,8 +165,14 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             if (convertView == null) {
                 imageView = new ImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setLayoutParams(mImageViewLayoutParams);
             } else {
                 imageView = (ImageView) convertView;
+            }
+
+            // Check the height matches our calculated column width
+            if (imageView.getLayoutParams().height != mItemHeight) {
+                imageView.setLayoutParams(mImageViewLayoutParams);
             }
             loadBitmap(imageUrls[position], imageView);
             return imageView;
@@ -145,6 +186,25 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             // TODO Drawable 추가
 
             task.execute(imageUrl);
+        }
+
+        public int getNumColumn() {
+            return mNumColumns;
+        }
+
+        public void setNumColumns(int numColumns) {
+            this.mNumColumns = numColumns;
+        }
+
+        public void setItemHeight(int height) {
+            Log.d(TAG, "setItemHeight");
+            if (height == mItemHeight) {
+                return;
+            }
+            mItemHeight = height;
+            mImageViewLayoutParams =
+                    new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight);
+            notifyDataSetChanged();
         }
     }
 }
