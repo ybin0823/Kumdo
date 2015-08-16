@@ -115,7 +115,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, position);
+        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, imageUrls[position]);
         startActivity(intent);
     }
 
