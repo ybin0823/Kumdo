@@ -3,6 +3,12 @@ package com.nhnnext.android.kumdo.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,7 +23,12 @@ import android.widget.ImageView;
 
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
-import com.nhnnext.android.kumdo.util.BitmapWorkerTask;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * 로컬 갤러리에 저장된 이미지를 리스트로 보여주는 Fragment
@@ -27,10 +38,11 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     private static final String TAG = "MylistFragment";
     private ImageAdapter mAdapter;
 
+    private Bitmap mPlaceHolderBitmap;
+
     private int mImageSize;
 
     private static final String LOCAL_SERVER_IP = "192.168.1.105:3000";
-
     // local image server url for test
     public final static String[] imageUrls = {
             "http://" + LOCAL_SERVER_IP +"/uploads/1.jpg",
@@ -52,6 +64,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mImageSize = getResources().getDimensionPixelSize(R.dimen.image_size);
+        mPlaceHolderBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
         mAdapter = new ImageAdapter(getActivity());
     }
 
@@ -70,7 +83,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
                     public void onGlobalLayout() {
-                        if(mAdapter.getNumColumn() == 0) {
+                        if (mAdapter.getNumColumn() == 0) {
                             final int numColumns = (int) Math.floor(
                                     mGridView.getWidth() / mImageSize);
                             if (numColumns > 0) {
@@ -180,16 +193,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             return imageView;
         }
 
-        private void loadBitmap(String imageUrl, ImageView imageView) {
-            //TODO task 확인
-
-            final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-
-            // TODO Drawable 추가
-
-            task.execute(imageUrl);
-        }
-
         public int getNumColumn() {
             return mNumColumns;
         }
@@ -207,6 +210,108 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             mImageViewLayoutParams =
                     new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight);
             notifyDataSetChanged();
+        }
+
+        private void loadBitmap(String imageUrl, ImageView imageView) {
+
+            if (cancelPotentialWork(imageUrl, imageView)) {
+                final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+                final AsyncDrawable asyncDrawable =
+                        new AsyncDrawable(getResources(), mPlaceHolderBitmap, task);
+                imageView.setImageDrawable(asyncDrawable);
+                task.execute(imageUrl);
+            }
+        }
+    }
+
+    private boolean cancelPotentialWork(String imageUrl, ImageView imageView) {
+        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+
+        if (bitmapWorkerTask != null) {
+            final String bitmapData = bitmapWorkerTask.data;
+            if (!bitmapData.equals(imageUrl)) {
+                // Cancel previous task
+                bitmapWorkerTask.cancel(true);
+            } else {
+                // The same work is already in progress
+                return false;
+            }
+        }
+        // No task associated with the ImageView, or an existing task was cancelled
+        return true;
+    }
+
+    private BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+        if (imageView != null) {
+            final Drawable drawable = imageView.getDrawable();
+            if (drawable instanceof AsyncDrawable) {
+                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+                return asyncDrawable.getBitmapWorkerTask();
+            }
+        }
+        return null;
+    }
+
+    private class AsyncDrawable extends BitmapDrawable {
+        private final WeakReference<BitmapWorkerTask> bitmapWorkerTasReference;
+
+        public AsyncDrawable(Resources res, Bitmap bitmap, BitmapWorkerTask bitmapWorkerTask) {
+            super(res, bitmap);
+            bitmapWorkerTasReference = new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
+        }
+
+        public BitmapWorkerTask getBitmapWorkerTask() {
+            return bitmapWorkerTasReference.get();
+        }
+    }
+
+    private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+        private static final String TAG = "BitmapWorkerTask";
+        private final WeakReference<ImageView> imageViewReference;
+        public String data = "";
+
+        public BitmapWorkerTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
+
+        //TODO Volley로 변경
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            Log.d(TAG, "doInBackground - starting work");
+
+            data = params[0];
+
+            try {
+                HttpURLConnection conn = (HttpURLConnection )new URL(data).openConnection();
+                InputStream is = conn.getInputStream();
+
+                return decodeSampledBitmapFromStream(is, 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    Log.d(TAG, "onPostExecute - setting bitmap");
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
+
+        public Bitmap decodeSampledBitmapFromStream(InputStream is, int inSampleSize) {
+            Log.d(TAG, "decodeSampledBitmapFromStream - resizing bitmap");
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = inSampleSize;
+
+            return BitmapFactory.decodeStream(is, null, options);
         }
     }
 }

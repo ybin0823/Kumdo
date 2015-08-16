@@ -3,8 +3,15 @@ package com.nhnnext.android.kumdo.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +22,12 @@ import android.widget.ListView;
 
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
-import com.nhnnext.android.kumdo.util.BitmapWorkerTask;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * 서버에서 저장된 데이터 중 최신 데이터(or 추천수가 가장 높은 데이터)를 화면에 뿌려주는 Fragmet
@@ -143,13 +155,105 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         }
 
         private void loadBitmap(String imageUrl, ImageView imageView) {
-            //TODO task 확인
 
-            final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+            if (cancelPotentialWork(imageUrl, imageView)) {
+                final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+                final AsyncDrawable asyncDrawable =
+                        new AsyncDrawable(getResources(), null, task);
+                imageView.setImageDrawable(asyncDrawable);
+                task.execute(imageUrl);
+            }
+        }
+    }
 
-            // TODO Drawable 추가
+    private boolean cancelPotentialWork(String imageUrl, ImageView imageView) {
+        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
-            task.execute(imageUrl);
+        if (bitmapWorkerTask != null) {
+            final String bitmapData = bitmapWorkerTask.data;
+            if (!bitmapData.equals(imageUrl)) {
+                // Cancel previous task
+                bitmapWorkerTask.cancel(true);
+            } else {
+                // The same work is already in progress
+                return false;
+            }
+        }
+        // No task associated with the ImageView, or an existing task was cancelled
+        return true;
+    }
+
+    private BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+        if (imageView != null) {
+            final Drawable drawable = imageView.getDrawable();
+            if (drawable instanceof AsyncDrawable) {
+                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
+                return asyncDrawable.getBitmapWorkerTask();
+            }
+        }
+        return null;
+    }
+
+    private class AsyncDrawable extends BitmapDrawable {
+        private final WeakReference<BitmapWorkerTask> bitmapWorkerTasReference;
+
+        public AsyncDrawable(Resources res, Bitmap bitmap, BitmapWorkerTask bitmapWorkerTask) {
+            super(res, bitmap);
+            bitmapWorkerTasReference = new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
+        }
+
+        public BitmapWorkerTask getBitmapWorkerTask() {
+            return bitmapWorkerTasReference.get();
+        }
+    }
+
+    private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+        private static final String TAG = "BitmapWorkerTask";
+        private final WeakReference<ImageView> imageViewReference;
+        public String data = "";
+
+        public BitmapWorkerTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
+
+        //TODO Volley로 변경
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            Log.d(TAG, "doInBackground - starting work");
+
+            data = params[0];
+
+            try {
+                HttpURLConnection conn = (HttpURLConnection )new URL(data).openConnection();
+                InputStream is = conn.getInputStream();
+
+                return decodeSampledBitmapFromStream(is, 8);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    Log.d(TAG, "onPostExecute - setting bitmap");
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
+
+        public Bitmap decodeSampledBitmapFromStream(InputStream is, int inSampleSize) {
+            Log.d(TAG, "decodeSampledBitmapFromStream - resizing bitmap");
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = inSampleSize;
+
+            return BitmapFactory.decodeStream(is, null, options);
         }
     }
 }
