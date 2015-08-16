@@ -1,9 +1,12 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.nhn.android.naverlogin.OAuthLogin;
 import com.nhn.android.naverlogin.data.OAuthLoginState;
@@ -19,19 +22,20 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // SplashActivity 확인을 위해 2초 동안 지연하는 동작
-        // TODO 추후에 네트워크 기능 추가 되면 제거
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (OAuthLoginState.OK.equals(OAuthLogin.getInstance().getState(getApplicationContext()))) {
-                    // access token 이 있는 상태로 바로 메뉴로 전환
-                    showMenu();
-                } else {
-                    showNaverLogin();
-                }
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected()) {
+            if (OAuthLoginState.OK.equals(OAuthLogin.getInstance().getState(getApplicationContext()))) {
+                // access token 이 있는 상태로 바로 메뉴로 전환
+                showMenu();
+            } else {
+                showNaverLogin();
             }
-        }, 2000);
+        } else {
+            //TODO change to dialog
+            Toast.makeText(this, "No network connection available!!!", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showMenu() {

@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
-    android:versionCode="35"
-    android:versionName="0.3.5">
+    android:versionCode="36"
+    android:versionName="0.3.6">
 
-    <!-- Internet 통신을 위한 Permission -->
+    <!-- Allows applications to open network sockets -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!--Allows applications to access information about networks-->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- kikat 아래 버전을 위해 갤러리에 이미지 저장을 위한 Permission -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

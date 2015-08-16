@@ -8,6 +8,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
@@ -219,7 +222,16 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                 final AsyncDrawable asyncDrawable =
                         new AsyncDrawable(getResources(), mPlaceHolderBitmap, task);
                 imageView.setImageDrawable(asyncDrawable);
-                task.execute(imageUrl);
+
+                ConnectivityManager connMgr = (ConnectivityManager)
+                        getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+                if (networkInfo != null && networkInfo.isConnected()) {
+                    task.execute(imageUrl);
+                } else {
+                    //TODO change to dialog
+                    Toast.makeText(getActivity(), "No network connection available!!!", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
