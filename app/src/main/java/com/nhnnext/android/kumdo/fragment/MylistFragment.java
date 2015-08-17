@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,8 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             "http://" + LOCAL_SERVER_IP +"/uploads/8.jpg"
     };
 
+    private LruCache<String, Bitmap> mMemoryCache;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -69,6 +72,29 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         mImageSize = getResources().getDimensionPixelSize(R.dimen.image_size);
         mPlaceHolderBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
         mAdapter = new ImageAdapter(getActivity());
+
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+        Log.d(TAG, "maxMemory : " + maxMemory);
+
+        // Use 1/8 of the available memory for this memory cache
+        final int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                return bitmap.getByteCount() / 1024;
+            }
+        };
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    private Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
     }
 
     @Override
@@ -216,8 +242,11 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         }
 
         private void loadBitmap(String imageUrl, ImageView imageView) {
+            Bitmap bitmap = getBitmapFromMemCache(imageUrl);
 
-            if (cancelPotentialWork(imageUrl, imageView)) {
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else if (cancelPotentialWork(imageUrl, imageView)) {
                 final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
                 final AsyncDrawable asyncDrawable =
                         new AsyncDrawable(getResources(), mPlaceHolderBitmap, task);
@@ -297,8 +326,9 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             try {
                 HttpURLConnection conn = (HttpURLConnection )new URL(data).openConnection();
                 InputStream is = conn.getInputStream();
-
-                return decodeSampledBitmapFromStream(is, 8);
+                Bitmap bitmap = decodeSampledBitmapFromStream(is, 8);
+                addBitmapToMemoryCache(data, bitmap);
+                return bitmap;
             } catch (IOException e) {
                 e.printStackTrace();
             }
