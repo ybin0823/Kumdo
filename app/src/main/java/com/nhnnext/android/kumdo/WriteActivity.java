@@ -151,18 +151,18 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void onClickSave(View v) {
+        StringBuilder sentence = new StringBuilder();
+        TextView textView;
         int count = mContainer.getChildCount();
 
-        String sentence = "";
-        TextView tv;
         for (int i = 0; i < count; i++) {
-            tv = (TextView) mContainer.getChildAt(i);
-
-            //TODO StringBuilder로 변경
-            sentence += tv.getText().toString();
+            textView = (TextView) mContainer.getChildAt(i);
+            if (textView.getText().length() != 0) {
+                sentence.append(" " + textView.getText());
+            }
         }
 
-        if(sentence.isEmpty()) {
+        if(sentence.length() == 0) {
             Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
             return;
         }
