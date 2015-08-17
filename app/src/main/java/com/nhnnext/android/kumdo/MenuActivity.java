@@ -1,6 +1,10 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -13,14 +17,25 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.nhn.android.naverlogin.OAuthLogin;
 import com.nhnnext.android.kumdo.fragment.BestFragment;
 import com.nhnnext.android.kumdo.fragment.CategoryFragment;
 import com.nhnnext.android.kumdo.fragment.MylistFragment;
+import com.nhnnext.android.kumdo.model.User;
+import com.nhnnext.android.kumdo.util.XmlParser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,12 +49,27 @@ public class MenuActivity extends AppCompatActivity {
     public static final String HOME = "Home";
     public static final String CATEGORY = "Category";
     public static final String MY_LIST = "My List";
+    private static final String TAG = "MenuActivity";
     private DrawerLayout mDrawerLayout;
+
+    private ImageView mUserImage;
+    private TextView mUserName;
+    private TextView mUserEmail;
+
+    private OAuthLogin mOAuthLoginInstance;
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        mUserImage = (ImageView) findViewById(R.id.user_image);
+        mUserName = (TextView) findViewById(R.id.user_name);
+        mUserEmail = (TextView) findViewById(R.id.user_email);
+
+        mOAuthLoginInstance = OAuthLogin.getInstance();
+        mContext = this;
 
         initActionBar();
 
@@ -47,6 +77,13 @@ public class MenuActivity extends AppCompatActivity {
 
         initTabView();
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        RequestApiTask requestApiTask = new RequestApiTask();
+        requestApiTask.execute();
     }
 
     private void initTabView() {
@@ -178,6 +215,79 @@ public class MenuActivity extends AppCompatActivity {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentsTitle.get(position);
+        }
+    }
+
+    private class RequestApiTask extends AsyncTask<Void, Void, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            String url = "https://apis.naver.com/nidlogin/nid/getUserProfile.xml";
+            String at = mOAuthLoginInstance.getAccessToken(mContext);
+            return mOAuthLoginInstance.requestApi(mContext, at, url);
+        }
+
+        protected void onPostExecute(String content) {
+            Log.d(TAG, "requestApi : " + content);
+            User user = XmlParser.parse(content);
+            mUserName.setText(user.getName());
+            mUserEmail.setText(user.getEmail());
+            BitmapWorkerTask task = new BitmapWorkerTask(mUserImage);
+            task.execute(user.getProfile_image());
+        }
+    }
+
+    private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
+        private static final String TAG = "BitmapWorkerTask";
+        private final WeakReference<ImageView> imageViewReference;
+        public String data = "";
+
+        public BitmapWorkerTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<ImageView>(imageView);
+        }
+
+        //TODO Volley로 변경
+        @Override
+        protected Bitmap doInBackground(String... params) {
+            Log.d(TAG, "doInBackground - starting work");
+
+            data = params[0];
+
+            try {
+                HttpURLConnection conn = (HttpURLConnection )new URL(data).openConnection();
+                InputStream is = conn.getInputStream();
+
+                return decodeSampledBitmapFromStream(is, 1);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Bitmap bitmap) {
+            if (imageViewReference != null && bitmap != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    Log.d(TAG, "onPostExecute - setting bitmap");
+                    imageView.setImageBitmap(bitmap);
+                }
+            }
+        }
+
+        public Bitmap decodeSampledBitmapFromStream(InputStream is, int inSampleSize) {
+            Log.d(TAG, "decodeSampledBitmapFromStream - resizing bitmap");
+
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = inSampleSize;
+
+            return BitmapFactory.decodeStream(is, null, options);
         }
     }
 }

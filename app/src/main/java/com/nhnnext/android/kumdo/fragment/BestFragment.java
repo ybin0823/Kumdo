@@ -38,7 +38,7 @@ import java.net.URL;
  */
 public class BestFragment extends Fragment implements AdapterView.OnItemClickListener {
     private ImageAdapter mAdapter;
-    private static final String LOCAL_SERVER_IP = "192.168.1.105:3000";
+    private static final String LOCAL_SERVER_IP = "10.64.192.85:3000";
 
     // local image server url for test
     public final static String[] imageUrls = {
