@@ -27,7 +27,7 @@ public class SettingActivity extends AppCompatActivity {
         if(OAuthLoginState.OK.equals(mOAuthLoginInstance.getState(mContext))) {
             mOAuthLoginInstance.logout(mContext);
             if(!OAuthLoginState.OK.equals(mOAuthLoginInstance.getState(mContext))) {
-                Intent intent = new Intent(this, OAuthActivity.class);
+                Intent intent = new Intent(this, SnsLoginActivity.class);
                 startActivity(intent);
             }
         }

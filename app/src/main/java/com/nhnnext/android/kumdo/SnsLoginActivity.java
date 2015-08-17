@@ -16,8 +16,8 @@ import com.nhn.android.naverlogin.ui.view.OAuthLoginButton;
  * MenuActivity가 AppCompatActivity를 상속받아야 한다.
  * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.10 by jyb)
  */
-public class OAuthActivity extends AppCompatActivity {
-    private static final String TAG = "OAuthActivity";
+public class SnsLoginActivity extends AppCompatActivity {
+    private static final String TAG = "SnsLoginActivity";
 
     /**
      * client 정보

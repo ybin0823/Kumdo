@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity {
                 // access token 이 있는 상태로 바로 메뉴로 전환
                 showMenu();
             } else {
-                showNaverLogin();
+                showSnsLogin();
             }
         } else {
             //TODO change to dialog
@@ -44,8 +44,8 @@ public class SplashActivity extends AppCompatActivity {
         finish();
     }
 
-    private void showNaverLogin() {
-        Intent intent = new Intent(this, OAuthActivity.class);
+    private void showSnsLogin() {
+        Intent intent = new Intent(this, SnsLoginActivity.class);
         startActivity(intent);
         finish();
     }
