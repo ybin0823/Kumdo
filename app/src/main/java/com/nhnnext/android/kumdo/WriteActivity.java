@@ -19,6 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Random;
 
 /**
@@ -32,6 +38,7 @@ import java.util.Random;
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
+    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.60:3000/save";
 
     private LinearLayout mContainer;
     private Button mConcreteButton;
@@ -151,7 +158,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void onClickSave(View v) {
-        StringBuilder sentence = new StringBuilder();
+        final StringBuilder sentence = new StringBuilder();
         TextView textView;
         int count = mContainer.getChildCount();
 
@@ -166,6 +173,47 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        new Thread(new Runnable() {
+            public void run() {
+                HttpURLConnection conn = null;
+                try {
+                    URL url = new URL(SERVER_ADDRESS_SAVE);
+                    conn = (HttpURLConnection) url.openConnection();
+                    conn.setDoOutput(true);
+
+                    OutputStream os = conn.getOutputStream ();
+                    os.write(sentence.toString().getBytes());
+                    os.flush();
+                    os.close();
+
+                    int responseCode = conn.getResponseCode();
+                    if (responseCode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(
+                                conn.getInputStream()));
+                        String inputLine;
+                        StringBuffer response = new StringBuffer();
+
+                        while ((inputLine = in.readLine()) != null) {
+                            response.append(inputLine);
+                        }
+                        in.close();
+
+                        // print result
+                        Log.d(TAG, response.toString());
+                    } else {
+                        Log.d(TAG, "POST request not worked");
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException : " + e);
+                } finally {
+                    if (conn != null) {
+                        conn.disconnect();
+                    }
+                }
+            }
+        }).start();
+
         Toast.makeText(this, sentence, Toast.LENGTH_SHORT).show();
     }
 

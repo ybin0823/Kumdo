@@ -46,7 +46,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
     private int mImageSize;
 
-    private static final String LOCAL_SERVER_IP = "10.64.192.85:3000";
+    private static final String LOCAL_SERVER_IP = "10.64.192.60:3000";
     // local image server url for test
     public final static String[] imageUrls = {
             "http://" + LOCAL_SERVER_IP +"/uploads/1.jpg",
