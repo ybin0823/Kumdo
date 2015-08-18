@@ -1,6 +1,9 @@
 package com.nhnnext.android.kumdo.model;
 
-public class User {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class User implements Parcelable {
     private String email;
     private String nickname;
     private String enc_id;
@@ -26,6 +29,18 @@ public class User {
 
     public User() {
 
+    }
+
+    public User(Parcel in) {
+        this.email = in.readString();
+        this.nickname = in.readString();
+        this.enc_id = in.readString();
+        this.profile_image = in.readString();
+        this.age = in.readString();
+        this.gender = in.readString();
+        this.id = in.readString();
+        this.name = in.readString();
+        this.birthday = in.readString();
     }
 
     public String getEmail() {
@@ -114,4 +129,34 @@ public class User {
                 ", birthday='" + birthday + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(email);
+        dest.writeString(nickname);
+        dest.writeString(enc_id);
+        dest.writeString(profile_image);
+        dest.writeString(age);
+        dest.writeString(gender);
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(birthday);
+    }
+
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }
