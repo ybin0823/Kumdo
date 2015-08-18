@@ -55,6 +55,7 @@ public class MenuActivity extends AppCompatActivity {
     private ImageView mUserImage;
     private TextView mUserName;
     private TextView mUserEmail;
+    private User user;
 
     private OAuthLogin mOAuthLoginInstance;
     private Context mContext;
@@ -146,6 +147,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private void openWrite() {
         Intent intent = new Intent(this, WriteActivity.class);
+        intent.putExtra("user", user);
         startActivity(intent);
     }
 
@@ -233,7 +235,7 @@ public class MenuActivity extends AppCompatActivity {
 
         protected void onPostExecute(String content) {
             Log.d(TAG, "requestApi : " + content);
-            User user = XmlParser.parse(content);
+            user = XmlParser.parse(content);
             mUserName.setText(user.getName());
             mUserEmail.setText(user.getEmail());
             BitmapWorkerTask task = new BitmapWorkerTask(mUserImage);

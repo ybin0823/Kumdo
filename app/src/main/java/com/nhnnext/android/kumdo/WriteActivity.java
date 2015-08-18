@@ -19,13 +19,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.nhnnext.android.kumdo.model.User;
+import com.nhnnext.android.kumdo.model.Writing;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * 1. Server에서 단어를 Random하게 불러와야 한다(TODO 서버에서 가져올지, 로컬이 보유할지 설계 고민해볼 것)
@@ -46,6 +52,10 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private Button mNatureButton;
     private ImageView mImageView;
 
+    private User user;
+    private Writing writing;
+    private Set<String> words;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +64,10 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         initActionBar();
 
         initView();
+
+        Bundle bundle = getIntent().getExtras();
+        user = bundle.getParcelable("user");
+        words = new HashSet<String>();
     }
 
     private void initView() {
@@ -155,6 +169,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         TextView mTextView= new TextView(this);
         mTextView.setText(word);
         mContainer.addView(mTextView);
+        words.add(word);
     }
 
     public void onClickSave(View v) {
@@ -174,6 +189,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
+        writing = new Writing(user,  sentence.toString(), words.toArray());
         new Thread(new Runnable() {
             public void run() {
                 HttpURLConnection conn = null;
@@ -183,7 +199,10 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                     conn.setDoOutput(true);
 
                     OutputStream os = conn.getOutputStream ();
-                    os.write(sentence.toString().getBytes());
+
+                    Gson gson = new Gson();
+                    String json = gson.toJson(writing);
+                    os.write(json.getBytes());
                     os.flush();
                     os.close();
 
