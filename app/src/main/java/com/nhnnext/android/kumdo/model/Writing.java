@@ -5,9 +5,9 @@ import java.util.Arrays;
 public class Writing {
     private User user;
     private String text;
-    private Object[] words;
+    private String[] words;
 
-    public Writing(User user, String text, Object[] words) {
+    public Writing(User user, String text, String[] words) {
         this.user = user;
         this.text = text;
         this.words = words;
@@ -21,7 +21,7 @@ public class Writing {
         return text;
     }
 
-    public Object[] getWords() {
+    public String[] getWords() {
         return words;
     }
 
@@ -33,7 +33,7 @@ public class Writing {
         this.text = text;
     }
 
-    public void setWords(Object[] words) {
+    public void setWords(String[] words) {
         this.words = words;
     }
 

@@ -44,7 +44,7 @@ import java.util.Set;
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
-    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.60:3000/save";
+    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.61:3000/save";
 
     private LinearLayout mContainer;
     private Button mConcreteButton;
@@ -189,7 +189,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        writing = new Writing(user,  sentence.toString(), words.toArray());
+        writing = new Writing(user,  sentence.toString(), words.toArray(new String[words.size()]));
         new Thread(new Runnable() {
             public void run() {
                 HttpURLConnection conn = null;
