@@ -19,16 +19,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -38,20 +41,11 @@ import java.net.URL;
  * Tab Layout을 위해 ViewPager를 사용. 따라서 v4.Fragment를 상속받는다(`15.08.10 by jyb)
  */
 public class BestFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private ImageAdapter mAdapter;
-    private static final String LOCAL_SERVER_IP = "10.64.192.60:3000";
+    private static final String TAG = "BestFragment";
+    private static final String SERVER_GET_BEST = "http://10.64.192.61:3000/best";
 
-    // local image server url for test
-    public final static String[] imageUrls = {
-            "http://" + LOCAL_SERVER_IP +"/uploads/1.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/2.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/3.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/4.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/5.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/6.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/7.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/8.jpg"
-    };
+    private ImageAdapter mAdapter;
+    public String[] mImageUrls;
 
     private LruCache<String, Bitmap> mMemoryCache;
 
@@ -63,13 +57,10 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAdapter = new ImageAdapter(getActivity());
 
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
-
         // Use 1/8 of the available memory for this memory cache
         final int cacheSize = maxMemory / 8;
-
         mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
             @Override
             protected int sizeOf(String key, Bitmap bitmap) {
@@ -91,9 +82,37 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.best_view, container, false);
-        ListView mListView = (ListView) view.findViewById(R.id.best_list);
-        mListView.setAdapter(mAdapter);
+        final ListView mListView = (ListView) view.findViewById(R.id.best_list);
         mListView.setOnItemClickListener(this);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url = null;
+                HttpURLConnection conn = null;
+                try {
+                    url = new URL(SERVER_GET_BEST);
+                    conn = (HttpURLConnection) url.openConnection();
+
+                    InputStream is = conn.getInputStream();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String line;
+                    line = br.readLine();
+                    Gson gson = new Gson();
+                    mImageUrls = gson.fromJson(line, String[].class);
+                    mListView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter = new ImageAdapter(getActivity(), mImageUrls);
+                            mListView.setAdapter(mAdapter);
+                        }
+                    });
+                    Log.d(TAG, line);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
         return view;
     }
 
@@ -140,19 +159,23 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, imageUrls[position]);
+        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, mImageUrls[position]);
         startActivity(intent);
     }
 
-    private class ImageAdapter extends BaseAdapter {
+    private class ImageAdapter extends ArrayAdapter {
         private final Context mContext;
         private ListView.LayoutParams mImageViewLayoutParams;
+        private String[] imageUrls;
 
-        public ImageAdapter(Context context) {
+        public ImageAdapter(Context context, String[] param) {
+            super(context, 0, param);
             this.mContext = context;
             mImageViewLayoutParams = new ListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     350);
+            imageUrls = param;
         }
+
         @Override
         public int getCount() {
             return imageUrls.length;

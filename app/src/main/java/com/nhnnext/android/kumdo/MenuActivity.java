@@ -2,6 +2,7 @@ package com.nhnnext.android.kumdo;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -238,6 +239,16 @@ public class MenuActivity extends AppCompatActivity {
             user = XmlParser.parse(content);
             mUserName.setText(user.getName());
             mUserEmail.setText(user.getEmail());
+
+            // We need an Editor object to make preference changes.
+            // All objects are from android.context.Context
+            SharedPreferences settings = getSharedPreferences("userInfo", 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("userEmail", user.getEmail());
+
+            // Commit the edits!
+            editor.commit();
+
             BitmapWorkerTask task = new BitmapWorkerTask(mUserImage);
             task.execute(user.getProfile_image());
         }

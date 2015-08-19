@@ -3,6 +3,7 @@ package com.nhnnext.android.kumdo.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,16 +21,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -46,18 +50,9 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
     private int mImageSize;
 
-    private static final String LOCAL_SERVER_IP = "10.64.192.60:3000";
-    // local image server url for test
-    public final static String[] imageUrls = {
-            "http://" + LOCAL_SERVER_IP +"/uploads/1.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/2.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/3.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/4.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/5.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/6.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/7.jpg",
-            "http://" + LOCAL_SERVER_IP +"/uploads/8.jpg"
-    };
+    private static final String SERVER_GET_MYLIST = "http://10.64.192.61:3000/mylist";
+    public String[] mImageUrls;
+    private String userEmail;
 
     private LruCache<String, Bitmap> mMemoryCache;
 
@@ -71,7 +66,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         super.onCreate(savedInstanceState);
         mImageSize = getResources().getDimensionPixelSize(R.dimen.image_size);
         mPlaceHolderBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_photo);
-        mAdapter = new ImageAdapter(getActivity());
 
         final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
         Log.d(TAG, "maxMemory : " + maxMemory);
@@ -85,6 +79,10 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                 return bitmap.getByteCount() / 1024;
             }
         };
+
+        SharedPreferences data = getActivity().getSharedPreferences("userInfo", 0);
+        userEmail = data.getString("userEmail", "");
+        Log.d(TAG, "userEmail : " + data.getString("userEmail", ""));
     }
 
     public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
@@ -101,31 +99,60 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mylist_view, container, false);
         final GridView mGridView = (GridView) view.findViewById(R.id.grid_view);
-        mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(this);
 
-        // This listener is used to get the final width of the GridView and then calculate the
-        // number of columns and the width of each column. The width of each column is variable
-        // as the GridView has stretchMode=columnWidth. The column width is used to set the height
-        // of each view so we get nice square thumbnails.
-        mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        if (mAdapter.getNumColumn() == 0) {
-                            final int numColumns = (int) Math.floor(
-                                    mGridView.getWidth() / mImageSize);
-                            if (numColumns > 0) {
-                                int columnWidth = mGridView.getWidth() / numColumns;
-                                mAdapter.setNumColumns(numColumns);
-                                mAdapter.setItemHeight(columnWidth);
-                                Log.d(TAG, "numColumns : " + numColumns);
-                                Log.d(TAG, "width, height : " + columnWidth);
-                            }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL url = null;
+                HttpURLConnection conn = null;
+                try {
+                    url = new URL(SERVER_GET_MYLIST + "?userEmail=" + userEmail);
+                    conn = (HttpURLConnection) url.openConnection();
+
+                    InputStream is = conn.getInputStream();
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                    String line;
+                    line = br.readLine();
+                    Gson gson = new Gson();
+                    mImageUrls = gson.fromJson(line, String[].class);
+
+                    mGridView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mAdapter = new ImageAdapter(getActivity(), mImageUrls);
+                            mGridView.setAdapter(mAdapter);
+
+                            // This listener is used to get the final width of the GridView and then calculate the
+                            // number of columns and the width of each column. The width of each column is variable
+                            // as the GridView has stretchMode=columnWidth. The column width is used to set the height
+                            // of each view so we get nice square thumbnails.
+                            mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
+                                    new ViewTreeObserver.OnGlobalLayoutListener() {
+                                        @Override
+                                        public void onGlobalLayout() {
+                                            if (mAdapter.getNumColumn() == 0) {
+                                                final int numColumns = (int) Math.floor(
+                                                        mGridView.getWidth() / mImageSize);
+                                                if (numColumns > 0) {
+                                                    int columnWidth = mGridView.getWidth() / numColumns;
+                                                    mAdapter.setNumColumns(numColumns);
+                                                    mAdapter.setItemHeight(columnWidth);
+                                                    Log.d(TAG, "numColumns : " + numColumns);
+                                                    Log.d(TAG, "width, height : " + columnWidth);
+                                                }
+                                            }
+                                        }
+                                    }
+                            );
                         }
-                    }
+                    });
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException :" + e);
                 }
-        );
+            }
+        }).start();
         return view;
     }
 
@@ -172,21 +199,24 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, imageUrls[position]);
+        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, mImageUrls[position]);
         startActivity(intent);
     }
 
-    private class ImageAdapter extends BaseAdapter {
+    private class ImageAdapter extends ArrayAdapter {
         private static final String TAG = "ImageAdapter";
         private final Context mContext;
         private GridView.LayoutParams mImageViewLayoutParams;
         private int mNumColumns = 0;
         private int mItemHeight = 0;
+        private String[] imageUrls;
 
-        public ImageAdapter(Context context) {
+        public ImageAdapter(Context context, String[] param) {
+            super(context, 0, param);
             this.mContext = context;
             mImageViewLayoutParams = new GridView.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            this.imageUrls = param;
         }
         @Override
         public int getCount() {
