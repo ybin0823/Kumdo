@@ -189,7 +189,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        writing = new Writing(user,  sentence.toString(), words.toArray(new String[words.size()]));
+        writing = new Writing(user.getEmail(),  sentence.toString(), words.toString());
         new Thread(new Runnable() {
             public void run() {
                 HttpURLConnection conn = null;

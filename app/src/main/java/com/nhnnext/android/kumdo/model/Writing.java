@@ -1,48 +1,61 @@
 package com.nhnnext.android.kumdo.model;
 
-import java.util.Arrays;
-
 public class Writing {
-    private User user;
+    private String userEmail;
     private String text;
-    private String[] words;
+    private String words;
+    private String imageUrl;
 
-    public Writing(User user, String text, String[] words) {
-        this.user = user;
+    public Writing(String userEmail, String text, String words, String imageUrl) {
+        this.userEmail = userEmail;
         this.text = text;
         this.words = words;
+        this.imageUrl = imageUrl;
     }
 
-    public User getUser() {
-        return user;
+    public Writing(String userEmail, String text, String words) {
+        this(userEmail, text, words, "");
+    }
+
+    public String getUser() {
+        return userEmail;
     }
 
     public String getText() {
         return text;
     }
 
-    public String[] getWords() {
+    public String getWords() {
         return words;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setUser(String userEmail) {
+        this.userEmail = userEmail;
     }
 
     public void setText(String text) {
         this.text = text;
     }
 
-    public void setWords(String[] words) {
+    public void setWords(String words) {
         this.words = words;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     @Override
     public String toString() {
         return "Writing{" +
-                "user=" + user +
+                "userEmail=" + userEmail +
                 ", text='" + text + '\'' +
-                ", words=" + Arrays.toString(words) +
+                ", words=" + words +
+                ", imageUrl=" + imageUrl +
                 '}';
     }
 }

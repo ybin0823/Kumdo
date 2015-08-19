@@ -24,9 +24,14 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
+import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 로컬 갤러리에 저장된 이미지를 리스트로 보여주는 Fragment
@@ -42,6 +47,8 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     private static final String SERVER_GET_MYLIST = "http://192.168.0.3:3000/mylist";
     public String[] mImageUrls;
     private String userEmail;
+
+    private List<Writing> writings;
 
     @Override
     public void onAttach(Activity activity) {
@@ -66,14 +73,24 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         final GridView mGridView = (GridView) view.findViewById(R.id.grid_view);
         mGridView.setOnItemClickListener(this);
 
+        //TODO Refactoring JsonArray -> Gson : convert to Writng.class -> add List<Writing>
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 SERVER_GET_MYLIST + "?userEmail=" + userEmail,
                 null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
                 Gson gson = new Gson();
-                mImageUrls = gson.fromJson(jsonArray.toString(), String[].class);
-                Log.d(TAG, "imageUrls : " + mImageUrls.toString());
+                writings = new ArrayList<Writing>();
+                int size = jsonArray.length();
+                mImageUrls = new String[size];
+                for (int i = 0; i < size; i++) {
+                    try {
+                        writings.add(gson.fromJson(jsonArray.getString(i), Writing.class));
+                        mImageUrls[i] = writings.get(i).getImageUrl();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException : " + e);
+                    }
+                }
                 mAdapter = new ImageAdapter(getActivity(), mImageUrls,
                         VolleySingleton.getInstance(mContext).getImageLoader());
                 mGridView.setAdapter(mAdapter);
