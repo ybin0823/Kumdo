@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="bottom">
 
-    <ImageView
+    <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/user_image"
         android:layout_width="50dp"
         android:layout_height="50dp" />
