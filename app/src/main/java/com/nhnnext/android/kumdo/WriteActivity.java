@@ -1,5 +1,6 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
@@ -19,17 +20,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.model.User;
 import com.nhnnext.android.kumdo.model.Writing;
+import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -44,7 +47,9 @@ import java.util.Set;
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
-    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.61:3000/save";
+    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.81:3000/save";
+
+    private Context mContext;
 
     private LinearLayout mContainer;
     private Button mConcreteButton;
@@ -61,12 +66,15 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_write);
 
+        mContext = this;
+
         initActionBar();
 
         initView();
 
         Bundle bundle = getIntent().getExtras();
         user = bundle.getParcelable("user");
+
         words = new HashSet<String>();
     }
 
@@ -165,8 +173,8 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     public void addWord(View v) {
         Button button = (Button) v;
         String word = button.getText().toString();
-        Log.d("word", word);
-        TextView mTextView= new TextView(this);
+
+        TextView mTextView= new TextView(mContext);
         mTextView.setText(word);
         mContainer.addView(mTextView);
         words.add(word);
@@ -189,51 +197,31 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             return;
         }
 
-        writing = new Writing(user.getEmail(),  sentence.toString(), words.toString());
-        new Thread(new Runnable() {
-            public void run() {
-                HttpURLConnection conn = null;
-                try {
-                    URL url = new URL(SERVER_ADDRESS_SAVE);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.setDoOutput(true);
+        writing = new Writing(user.getEmail(),  sentence.toString(),
+                Arrays.toString(words.toArray(new String[words.size()])));
 
-                    OutputStream os = conn.getOutputStream ();
-
-                    Gson gson = new Gson();
-                    String json = gson.toJson(writing);
-                    os.write(json.getBytes());
-                    os.flush();
-                    os.close();
-
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode == HttpURLConnection.HTTP_OK) {
-                        BufferedReader in = new BufferedReader(new InputStreamReader(
-                                conn.getInputStream()));
-                        String inputLine;
-                        StringBuffer response = new StringBuffer();
-
-                        while ((inputLine = in.readLine()) != null) {
-                            response.append(inputLine);
-                        }
-                        in.close();
-
-                        // print result
-                        Log.d(TAG, response.toString());
-                    } else {
-                        Log.d(TAG, "POST request not worked");
+        Gson gson = new Gson();
+        final String json = gson.toJson(writing);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, SERVER_ADDRESS_SAVE,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String s) {
+                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
                     }
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException : " + e);
-                } finally {
-                    if (conn != null) {
-                        conn.disconnect();
-                    }
-                }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e(TAG, "VolleyError :" + volleyError);
             }
-        }).start();
+        }) {
+            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("param", json);
+                return params;
+            }
+        };
 
-        Toast.makeText(this, sentence, Toast.LENGTH_SHORT).show();
+        VolleySingleton.getInstance(mContext).addTodRequestQueue(stringRequest);
     }
 
     public void loadImagefromGallery(View view) {
