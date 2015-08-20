@@ -236,8 +236,8 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                 holder.image.setLayoutParams(mImageViewLayoutParams);
             }
             Log.d(TAG, mImageUrls[position]);
-            holder.words.setText(writing.getWords());
             holder.image.setImageUrl(mImageUrls[position], mImageLoader);
+            holder.words.setText(writing.getWords());
             return v;
         }
 

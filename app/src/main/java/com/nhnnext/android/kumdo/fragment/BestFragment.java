@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -22,9 +23,14 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
+import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 서버에서 저장된 데이터 중 최신 데이터(or 추천수가 가장 높은 데이터)를 화면에 뿌려주는 Fragmet
@@ -38,6 +44,8 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     public String[] mImageUrls;
 
     private Context mContext;
+
+    private List<Writing> writings;
 
     @Override
     public void onAttach(Activity activity) {
@@ -62,7 +70,17 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             @Override
             public void onResponse(JSONArray jsonArray) {
                 Gson gson = new Gson();
-                mImageUrls = gson.fromJson(jsonArray.toString(), String[].class);
+                writings = new ArrayList<Writing>();
+                int size = jsonArray.length();
+                mImageUrls = new String[size];
+                for (int i = 0; i < size; i++) {
+                    try {
+                        writings.add(gson.fromJson(jsonArray.getString(i), Writing.class));
+                        mImageUrls[i] = writings.get(i).getImageUrl();
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException : " + e);
+                    }
+                }
                 mAdapter = new ImageAdapter(getActivity(), mImageUrls,
                         VolleySingleton.getInstance(mContext).getImageLoader());
                 mListView.setAdapter(mAdapter);
@@ -156,6 +174,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = convertView;
+            Writing writing = writings.get(position);
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(R.layout.best_row, null);
@@ -169,14 +188,21 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             }
 
             holder.image.setImageUrl(mImageUrls[position], mImageLoader);
+            holder.text.setText(writing.getText());
+            holder.words.setText(writing.getWords());
+
             return v;
         }
 
         private class ViewHolder {
             NetworkImageView image;
+            TextView text;
+            TextView words;
 
             public ViewHolder(View v) {
-                image = (NetworkImageView) v.findViewById(R.id.best_row);
+                image = (NetworkImageView) v.findViewById(R.id.writing_image);
+                text = (TextView) v.findViewById(R.id.writing_text);
+                words = (TextView) v.findViewById(R.id.writing_words);
                 v.setTag(this);
             }
         }
