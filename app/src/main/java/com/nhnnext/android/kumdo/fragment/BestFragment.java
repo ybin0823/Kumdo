@@ -32,7 +32,7 @@ import org.json.JSONArray;
  */
 public class BestFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "BestFragment";
-    private static final String SERVER_GET_BEST = "http://192.168.0.3:3000/best";
+    private static final String SERVER_GET_BEST = "http://10.64.192.81:3000/best";
 
     private ImageAdapter mAdapter;
     public String[] mImageUrls;

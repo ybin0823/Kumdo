@@ -14,6 +14,8 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -44,7 +46,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
     private int mImageSize;
 
-    private static final String SERVER_GET_MYLIST = "http://192.168.0.3:3000/mylist";
+    private static final String SERVER_GET_MYLIST = "http://10.64.192.81:3000/mylist";
     public String[] mImageUrls;
     private String userEmail;
 
@@ -180,7 +182,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     private class ImageAdapter extends ArrayAdapter {
         private static final String TAG = "ImageAdapter";
         private final Context mContext;
-        private GridView.LayoutParams mImageViewLayoutParams;
+        private RelativeLayout.LayoutParams mImageViewLayoutParams;
         private int mNumColumns = 0;
         private int mItemHeight = 0;
         private String[] imageUrls;
@@ -189,7 +191,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         public ImageAdapter(Context context, String[] param, ImageLoader imageLoader) {
             super(context, 0, param);
             this.mContext = context;
-            mImageViewLayoutParams = new GridView.LayoutParams(
+            mImageViewLayoutParams = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             this.imageUrls = param;
             mImageLoader = imageLoader;
@@ -213,9 +215,11 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = convertView;
+            Writing writing = writings.get(position);
+
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.mylist_tile, null);
+                v = vi.inflate(R.layout.mylist_tile, parent, false);
             }
 
             ViewHolder holder = (ViewHolder) v.getTag(R.id.id_holder);
@@ -224,6 +228,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                 holder = new ViewHolder(v);
                 v.setTag(R.id.id_holder, holder);
             }
+            Log.d(TAG, "image height/width : " + holder.image.getLayoutParams());
 
             holder.image.setLayoutParams(mImageViewLayoutParams);
 
@@ -231,6 +236,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                 holder.image.setLayoutParams(mImageViewLayoutParams);
             }
             Log.d(TAG, mImageUrls[position]);
+            holder.words.setText(writing.getWords());
             holder.image.setImageUrl(mImageUrls[position], mImageLoader);
             return v;
         }
@@ -249,15 +255,17 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
             }
             mItemHeight = height;
             mImageViewLayoutParams =
-                    new GridView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight);
+                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mItemHeight);
             notifyDataSetChanged();
         }
 
         private class ViewHolder {
             NetworkImageView image;
+            TextView words;
 
             public ViewHolder(View v) {
-                image = (NetworkImageView) v.findViewById(R.id.best_row);
+                image = (NetworkImageView) v.findViewById(R.id.mylist_image);
+                words = (TextView) v.findViewById(R.id.mylist_word);
                 v.setTag(this);
             }
         }
