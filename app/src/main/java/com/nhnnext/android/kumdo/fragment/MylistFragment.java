@@ -46,7 +46,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
     private int mImageSize;
 
-    private static final String SERVER_GET_MYLIST = "http://10.64.192.81:3000/mylist";
+    private static final String SERVER_GET_MYLIST = "http://192.168.0.3:3000/mylist";
     public String[] mImageUrls;
     private String userEmail;
 
