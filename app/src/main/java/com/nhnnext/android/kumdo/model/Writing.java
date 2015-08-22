@@ -1,28 +1,34 @@
 package com.nhnnext.android.kumdo.model;
 
 public class Writing {
-    private String userEmail;
-    private String text;
+    private String name;
+    private String email;
+    private String sentence;
     private String words;
     private String imageUrl;
+    private int category;
+    private String date;
 
-    public Writing(String userEmail, String text, String words, String imageUrl) {
-        this.userEmail = userEmail;
-        this.text = text;
+    public Writing(String name, String email, String sentence, String words, String imageUrl, int category, String date) {
+        this.name = name;
+        this.email = email;
+        this.sentence = sentence;
         this.words = words;
         this.imageUrl = imageUrl;
+        this.category = category;
+        this.date = date;
     }
 
-    public Writing(String userEmail, String text, String words) {
-        this(userEmail, text, words, "");
+    public String getName() {
+        return name;
     }
 
-    public String getUser() {
-        return userEmail;
+    public String getEmail() {
+        return email;
     }
 
-    public String getText() {
-        return text;
+    public String getSentence() {
+        return sentence;
     }
 
     public String getWords() {
@@ -33,12 +39,24 @@ public class Writing {
         return imageUrl;
     }
 
-    public void setUser(String userEmail) {
-        this.userEmail = userEmail;
+    public int getCategory() {
+        return category;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public String getDate() {
+        return date;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setSentence(String sentence) {
+        this.sentence = sentence;
     }
 
     public void setWords(String words) {
@@ -49,13 +67,24 @@ public class Writing {
         this.imageUrl = imageUrl;
     }
 
+    public void setCategory(int category) {
+        this.category = category;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         return "Writing{" +
-                "userEmail=" + userEmail +
-                ", text='" + text + '\'' +
-                ", words=" + words +
-                ", imageUrl=" + imageUrl +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", sentence='" + sentence + '\'' +
+                ", words='" + words + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", category=" + category +
+                ", date='" + date + '\'' +
                 '}';
     }
 }

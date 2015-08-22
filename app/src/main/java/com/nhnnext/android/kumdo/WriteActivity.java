@@ -18,10 +18,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.nhnnext.android.kumdo.model.User;
 import com.nhnnext.android.kumdo.model.Writing;
 
+import org.apache.http.Header;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -38,7 +47,8 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
     private static final int GET_CATEGORY = 2;
-    public static final String SERVER_ADDRESS_SAVE = "http://192.168.0.3:3000/save";
+    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.58:3000/save";
+    public static final int No_CATEGORY = 0;
 
     private Context mContext;
 
@@ -50,8 +60,9 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
 
     private User user;
     private Writing writing;
-    private Set<String> words;
+    private Set<String> usedWords;
     private String mImagePath;
+    private int mCategory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +78,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         Bundle bundle = getIntent().getExtras();
         user = bundle.getParcelable("user");
 
-        words = new HashSet<String>();
+        usedWords = new HashSet<String>();
     }
 
     private void initView() {
@@ -169,76 +180,74 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         TextView mTextView= new TextView(mContext);
         mTextView.setText(word);
         mContainer.addView(mTextView);
-        words.add(word);
+        usedWords.add(word);
     }
 
+    //TODO validation check about text, word
     public void onClickSave(View v) {
+        if (mImagePath == null)  {
+            Toast.makeText(this, "Please select your image", Toast.LENGTH_SHORT).show();
+            return;
+        }
         showCategoryDialog();
-//        final StringBuilder sentence = new StringBuilder();
-//        TextView textView;
-//        int count = mContainer.getChildCount();
-//
-//        for (int i = 0; i < count; i++) {
-//            textView = (TextView) mContainer.getChildAt(i);
-//            if (textView.getText().length() != 0) {
-//                sentence.append(" " + textView.getText());
-//            }
-//        }
-//
-//        if(sentence.length() == 0) {
-//            Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        writing = new Writing(user.getEmail(),  sentence.toString(),
-//                Arrays.toString(words.toArray(new String[words.size()])));
-//
-//        Gson gson = new Gson();
-//        final String json = gson.toJson(writing);
-//        StringRequest stringRequest = new StringRequest(Request.Method.POST, SERVER_ADDRESS_SAVE,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String s) {
-//                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError volleyError) {
-//                Log.e(TAG, "VolleyError :" + volleyError);
-//            }
-//        }) {
-//            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("param", json);
-//                return params;
-//            }
-//        };
-//
-//        VolleySingleton.getInstance(mContext).addTodRequestQueue(stringRequest);
-//
-//        AsyncHttpClient client = new AsyncHttpClient();
-//        RequestParams params = new RequestParams();
-//
-//        params.put("title", "title1");
-//        try {
-//            params.put("image", new File(mImagePath));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//
-//        client.post(SERVER_ADDRESS_SAVE + "Image", params, new AsyncHttpResponseHandler() {
-//            @Override
-//            public void onSuccess(int i, Header[] headers, byte[] bytes) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-//
-//            }
-//        });
+    }
 
+    private String getSetence() {
+        StringBuilder sentence = new StringBuilder();
+        TextView textView;
+        int count = mContainer.getChildCount();
+
+        for (int i = 0; i < count; i++) {
+            textView = (TextView) mContainer.getChildAt(i);
+            if (textView.getText().length() != 0) {
+                sentence.append(" " + textView.getText());
+            }
+        }
+
+        if(sentence.length() == 0) {
+            Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
+            return null;
+        }
+        return sentence.toString();
+    }
+
+    private void sendMultipart(String sentence, String words, String date) {
+        AsyncHttpClient client = new AsyncHttpClient();
+        RequestParams params = new RequestParams();
+
+        params.put("name", user.getName());
+        params.put("email", user.getEmail());
+        params.put("sentence", sentence);
+        params.put("words", words);
+        params.put("category", mCategory);
+        params.put("date", date);
+
+        Log.d(TAG, "params : " + params.toString());
         Log.d(TAG, "imagePath : " + mImagePath);
+
+        try {
+            params.put("image", new File(mImagePath));
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "FileNotFoundException : " + e);
+        }
+
+        client.post(SERVER_ADDRESS_SAVE + "Image", params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+                // save data to SQLite
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+
+            }
+        });
+    }
+
+    private boolean setWriting(String sentence, String words, String date) {
+        writing = new Writing(user.getName(), user.getEmail(), sentence,
+                words, "", mCategory, date);
+        return true;
     }
 
     public void pickImagefromGallery(View view) {
@@ -263,7 +272,21 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case GET_CATEGORY:
                 if(resultCode == RESULT_OK) {
-                    Log.d(TAG, "" + data.getIntExtra("category", -1));
+                    mCategory = data.getIntExtra("category", No_CATEGORY);
+                    if(mCategory != No_CATEGORY) {
+                        String sentence = getSetence();
+                        String words = Arrays.toString(usedWords.toArray(new String[usedWords.size()]));
+                        String date = String.valueOf(System.currentTimeMillis());
+
+                        // set wrting
+                        setWriting(sentence, words, date);
+
+                        // send data to server
+                        sendMultipart(sentence, words, date);
+
+                    } else {
+                        Toast.makeText(this, "Please choose category", Toast.LENGTH_SHORT).show();
+                    }
                 }
         }
     }

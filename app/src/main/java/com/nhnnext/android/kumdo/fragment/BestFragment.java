@@ -188,7 +188,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             }
 
             holder.image.setImageUrl(mImageUrls[position], mImageLoader);
-            holder.text.setText(writing.getText());
+            holder.text.setText(writing.getSentence());
             holder.words.setText(writing.getWords());
 
             return v;
