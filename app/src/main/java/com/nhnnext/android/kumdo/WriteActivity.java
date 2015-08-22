@@ -36,7 +36,7 @@ import java.util.Random;
 import java.util.Set;
 
 /**
- * 1. Server에서 단어를 Random하게 불러와야 한다(TODO 서버에서 가져올지, 로컬이 보유할지 설계 고민해볼 것)
+ * 1. 단어를 Random하게 불러와야 한다
  * 2. EditText를 클릭하면 글을 입력할 수 있는 창이 생성 된다
  * 3. 단어를 클릭하면 EditText 뒤에 단어가 생성된다
  * 4. 저장하기를 누르면 내용이 서버로 전송된다
@@ -47,7 +47,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
     private static final int GET_CATEGORY = 2;
-    public static final String SERVER_ADDRESS_SAVE = "http://10.64.192.58:3000/save";
+    public static final String UPLOAD_TO_SERVER = "http://192.168.0.3:3000/upload";
     public static final int No_CATEGORY = 0;
 
     private Context mContext;
@@ -138,11 +138,6 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         super.onDestroy();
     }
 
-    /**
-     * method : loadWord()
-     * 서버로부터 단어를 읽어온다
-     */
-
 
     /**
      * method : onClickEditText()
@@ -222,19 +217,18 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         params.put("category", mCategory);
         params.put("date", date);
 
-        Log.d(TAG, "params : " + params.toString());
-        Log.d(TAG, "imagePath : " + mImagePath);
-
         try {
             params.put("image", new File(mImagePath));
         } catch (FileNotFoundException e) {
             Log.e(TAG, "FileNotFoundException : " + e);
         }
 
-        client.post(SERVER_ADDRESS_SAVE + "Image", params, new AsyncHttpResponseHandler() {
+        client.post(UPLOAD_TO_SERVER, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                // save data to SQLite
+                Toast.makeText(getApplicationContext(), "Save Success!!!", Toast.LENGTH_SHORT).show();
+                finish();
+                //TODO save data to SQLite
             }
 
             @Override

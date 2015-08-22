@@ -77,7 +77,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
         //TODO Refactoring JsonArray -> Gson : convert to Writng.class -> add List<Writing>
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
-                SERVER_GET_MYLIST + "?userEmail=" + userEmail,
+                SERVER_GET_MYLIST + "?email=" + userEmail,
                 null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
@@ -112,8 +112,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                                         int columnWidth = mGridView.getWidth() / numColumns;
                                         mAdapter.setNumColumns(numColumns);
                                         mAdapter.setItemHeight(columnWidth);
-                                        Log.d(TAG, "numColumns : " + numColumns);
-                                        Log.d(TAG, "width, height : " + columnWidth);
                                     }
                                 }
                             }
