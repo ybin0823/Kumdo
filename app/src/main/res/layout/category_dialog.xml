@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_remove"
+        android:background="@android:color/transparent"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:onClick="close"
+        />
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+        <TableRow>
+            <Button
+                android:id="@+id/category_romance"
+                style="@style/DialogStyle"
+                android:text="Romance"/>
+            <Button
+                android:id="@+id/category_family"
+                style="@style/DialogStyle"
+                android:text="Family"/>
+        </TableRow>
+        <TableRow>
+            <Button
+                android:id="@+id/category_adventure"
+                style="@style/DialogStyle"
+                android:text="Adventure" />
+            <Button
+                android:id="@+id/category_friend"
+                style="@style/DialogStyle"
+                android:text="Friend"
+                />
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>

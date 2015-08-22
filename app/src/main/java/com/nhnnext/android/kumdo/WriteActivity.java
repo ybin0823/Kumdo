@@ -18,28 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.google.gson.Gson;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
 import com.nhnnext.android.kumdo.model.User;
 import com.nhnnext.android.kumdo.model.Writing;
-import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
-import org.apache.http.Header;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -54,6 +37,7 @@ import java.util.Set;
 public class WriteActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
+    private static final int GET_CATEGORY = 2;
     public static final String SERVER_ADDRESS_SAVE = "http://192.168.0.3:3000/save";
 
     private Context mContext;
@@ -189,74 +173,75 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void onClickSave(View v) {
-        final StringBuilder sentence = new StringBuilder();
-        TextView textView;
-        int count = mContainer.getChildCount();
-
-        for (int i = 0; i < count; i++) {
-            textView = (TextView) mContainer.getChildAt(i);
-            if (textView.getText().length() != 0) {
-                sentence.append(" " + textView.getText());
-            }
-        }
-
-        if(sentence.length() == 0) {
-            Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        writing = new Writing(user.getEmail(),  sentence.toString(),
-                Arrays.toString(words.toArray(new String[words.size()])));
-
-        Gson gson = new Gson();
-        final String json = gson.toJson(writing);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, SERVER_ADDRESS_SAVE,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String s) {
-                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                Log.e(TAG, "VolleyError :" + volleyError);
-            }
-        }) {
-            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
-                Map<String, String> params = new HashMap<String, String>();
-                params.put("param", json);
-                return params;
-            }
-        };
-
-        VolleySingleton.getInstance(mContext).addTodRequestQueue(stringRequest);
-
-        AsyncHttpClient client = new AsyncHttpClient();
-        RequestParams params = new RequestParams();
-
-        params.put("title", "title1");
-        try {
-            params.put("image", new File(mImagePath));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        client.post(SERVER_ADDRESS_SAVE + "Image", params, new AsyncHttpResponseHandler() {
-            @Override
-            public void onSuccess(int i, Header[] headers, byte[] bytes) {
-
-            }
-
-            @Override
-            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
-
-            }
-        });
+        showCategoryDialog();
+//        final StringBuilder sentence = new StringBuilder();
+//        TextView textView;
+//        int count = mContainer.getChildCount();
+//
+//        for (int i = 0; i < count; i++) {
+//            textView = (TextView) mContainer.getChildAt(i);
+//            if (textView.getText().length() != 0) {
+//                sentence.append(" " + textView.getText());
+//            }
+//        }
+//
+//        if(sentence.length() == 0) {
+//            Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        writing = new Writing(user.getEmail(),  sentence.toString(),
+//                Arrays.toString(words.toArray(new String[words.size()])));
+//
+//        Gson gson = new Gson();
+//        final String json = gson.toJson(writing);
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, SERVER_ADDRESS_SAVE,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String s) {
+//                        Toast.makeText(getApplicationContext(), "Success", Toast.LENGTH_SHORT).show();
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError volleyError) {
+//                Log.e(TAG, "VolleyError :" + volleyError);
+//            }
+//        }) {
+//            protected Map<String, String> getParams() throws com.android.volley.AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("param", json);
+//                return params;
+//            }
+//        };
+//
+//        VolleySingleton.getInstance(mContext).addTodRequestQueue(stringRequest);
+//
+//        AsyncHttpClient client = new AsyncHttpClient();
+//        RequestParams params = new RequestParams();
+//
+//        params.put("title", "title1");
+//        try {
+//            params.put("image", new File(mImagePath));
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//
+//        client.post(SERVER_ADDRESS_SAVE + "Image", params, new AsyncHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+//
+//            }
+//        });
 
         Log.d(TAG, "imagePath : " + mImagePath);
     }
 
-    public void loadImagefromGallery(View view) {
+    public void pickImagefromGallery(View view) {
         // Google의 기본 Galley Application 실행
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -270,21 +255,38 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LOAD_FROM_GALLERY && resultCode == RESULT_OK) {
-            Uri selectedImage = data.getData();
-
-            String[] filePathColumn = { MediaStore.Images.Media.DATA };
-            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-            cursor.moveToFirst();
-            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-            String picturePath = cursor.getString(columnIndex);
-            cursor.close();
-
-            mImagePath = picturePath;
-
-            mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            mImageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+        switch(requestCode) {
+            case LOAD_FROM_GALLERY:
+                if(resultCode == RESULT_OK) {
+                    loadImageFromGallery(data);
+                }
+                break;
+            case GET_CATEGORY:
+                if(resultCode == RESULT_OK) {
+                    Log.d(TAG, "" + data.getIntExtra("category", -1));
+                }
         }
+    }
+
+    private void loadImageFromGallery(Intent data) {
+        Uri selectedImage = data.getData();
+
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+
+        mImagePath = picturePath;
+
+        mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        mImageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+    }
+
+    public void showCategoryDialog() {
+        Intent intent = new Intent(this, CategoryActivity.class);
+        startActivityForResult(intent, GET_CATEGORY);
     }
 
     // 추후에는 Server 내에 word table을 유지할 예정
