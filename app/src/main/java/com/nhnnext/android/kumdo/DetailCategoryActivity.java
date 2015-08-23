@@ -40,11 +40,12 @@ public class DetailCategoryActivity extends AppCompatActivity {
             case 0:
                 return R.string.category_romance;
             case 1:
-                return R.string.category_adventure;
+                return R.string.category_friend;
             case 2:
                 return R.string.category_family;
             case 3:
-                return R.string.category_friend;
+                return R.string.category_adventure;
+
 
         }
         return -1;

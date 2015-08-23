@@ -15,9 +15,9 @@ import android.widget.Button;
  */
 public class CategoryActivity extends AppCompatActivity implements View.OnClickListener {
     private static final int CATEGORY_ROMANCE = 0;
-    private static final int CATEGORY_ADVENTURE = 1;
+    private static final int CATEGORY_FRIEND = 1;
     private static final int CATEGORY_FAMILY = 2;
-    private static final int CATEGORY_FRIEND = 3;
+    private static final int CATEGORY_ADVENTURE = 3;
 
     Intent intent;
     private Context mContext;
@@ -52,30 +52,25 @@ public class CategoryActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.category_romance:
-                intent.putExtra("category", Category.ROMANCE);
+                intent.putExtra("category", CATEGORY_ROMANCE);
                 setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_ROMANCE));
                 finish();
             break;
-            case R.id.category_adventure:
-                intent.putExtra("category", Category.ADVENTURE);
-                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_ADVENTURE));
+            case R.id.category_friend:
+                intent.putExtra("category", CATEGORY_FRIEND);
+                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_FRIEND));
                 finish();
-            break;
+                break;
             case R.id.category_family:
-                intent.putExtra("category", Category.FAMILY);
+                intent.putExtra("category", CATEGORY_FAMILY);
                 setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_FAMILY));
                 finish();
                 break;
-            case R.id.category_friend:
-                intent.putExtra("category", Category.FRIEND);
-                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_FRIEND));
+            case R.id.category_adventure:
+                intent.putExtra("category", CATEGORY_ADVENTURE);
+                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_ADVENTURE));
                 finish();
-            break;
-
+                break;
         }
-    }
-
-    enum Category {
-        ROMANCE, ADVENTURE, FAMILY, FRIEND
     }
 }
