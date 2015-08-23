@@ -90,6 +90,11 @@ public class MenuActivity extends AppCompatActivity {
         requestApiTask.execute();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
     private void initTabView() {
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         if (viewPager != null) {

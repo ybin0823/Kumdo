@@ -48,7 +48,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     public static final int LOAD_FROM_GALLERY = 1;
     private static final int GET_CATEGORY = 2;
     public static final String UPLOAD_TO_SERVER = "http://192.168.0.3:3000/upload";
-    public static final int No_CATEGORY = 0;
+    public static final int No_CATEGORY = -1;
 
     private Context mContext;
 

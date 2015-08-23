@@ -34,11 +34,12 @@ import java.util.List;
 
 /**
  * 서버에서 저장된 데이터 중 최신 데이터(or 추천수가 가장 높은 데이터)를 화면에 뿌려주는 Fragmet
+ * Home화면(MenuActivity)와 카테고리 별 최신 데이터(DetailCategoryActivity)에서 사용(`15.08.23 by jyb)
  * Tab Layout을 위해 ViewPager를 사용. 따라서 v4.Fragment를 상속받는다(`15.08.10 by jyb)
  */
 public class BestFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "BestFragment";
-    private static final String SERVER_GET_BEST = "http://192.168.0.3:3000/best";
+    private static final String SERVER_GET_BEST = "http://192.168.0.3:3000/best?category=";
 
     private ImageAdapter mAdapter;
     public String[] mImageUrls;
@@ -46,6 +47,25 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     private Context mContext;
 
     private List<Writing> writings;
+    private ListView mListView;
+
+    public static BestFragment newInstance(int category) {
+        BestFragment f = new BestFragment();
+
+        // Supply index input as an argument.
+        Bundle args = new Bundle();
+        args.putInt("category", category);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    public int getSelectedCategory() {
+        if (getArguments() == null) {
+            return -1;
+        }
+        return getArguments().getInt("category", -1);
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -62,10 +82,29 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.best_view, container, false);
-        final ListView mListView = (ListView) view.findViewById(R.id.best_list);
+        mListView = (ListView) view.findViewById(R.id.best_list);
         mListView.setOnItemClickListener(this);
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, SERVER_GET_BEST,
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // category num가 -1이면 전체 정보 가져오기
+        // 그 외(0~3) 이면 해당되는 카테고리 정보만 가져온다
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, SERVER_GET_BEST + getSelectedCategory(),
                 null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
@@ -93,23 +132,6 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         });
 
         VolleySingleton.getInstance(mContext).addTodRequestQueue(jsonArrayRequest);
-
-        return view;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 
     @Override

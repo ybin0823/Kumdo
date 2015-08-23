@@ -8,13 +8,16 @@ import android.view.View;
 import android.widget.Button;
 
 /**
- * Created by jangyoungbin on 15. 8. 22..
+ * 데이터를 저장하기 전에 카테고리를 선택하기 위한 Activity
+ * Dialog 형식처럼 배경은 transparent를 적용.
+ * 선택 된 카테고리 번호를 호출한 Activity로 전달한다
+ * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.23 by jyb)
  */
 public class CategoryActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final int CATEGORY_ROMANCE = 1;
-    private static final int CATEGORY_ADVENTURE = 2;
-    private static final int CATEGORY_FAMILY = 3;
-    private static final int CATEGORY_FRIEND = 4;
+    private static final int CATEGORY_ROMANCE = 0;
+    private static final int CATEGORY_ADVENTURE = 1;
+    private static final int CATEGORY_FAMILY = 2;
+    private static final int CATEGORY_FRIEND = 3;
 
     Intent intent;
     private Context mContext;

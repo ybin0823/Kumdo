@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
-    android:versionCode="47"
-    android:versionName="0.4.7">
+    android:versionCode="48"
+    android:versionName="0.4.8">
 
     <!-- Allows applications to open network sockets -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -136,6 +136,17 @@
         <activity android:name=".CategoryActivity"
             android:theme="@style/Theme.Transparent">
 
+        </activity>
+
+        <activity android:name=".DetailCategoryActivity"
+            android:parentActivityName=".MenuActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MenuActivity" />
         </activity>
 
         <!-- [naveroauthlogin][start] 네이버 아이디로 로그인에서 사용하는 액티비티를 등록 -->
