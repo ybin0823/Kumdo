@@ -20,6 +20,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -46,6 +51,7 @@ public class MenuActivity extends AppCompatActivity {
     public static final String HOME = "Home";
     public static final String CATEGORY = "Category";
     public static final String MY_LIST = "My List";
+    public static final int CategoryTab = 1;
 
     private DrawerLayout mDrawerLayout;
 
@@ -167,10 +173,36 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 getSupportActionBar().setTitle(adapter.getPageTitle(position));
+                if (position == CategoryTab) {
+                    setAnimationCategoryName();
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                if (state == CategoryTab) {
+                    setAnimationCategoryName();
+                }
+            }
+
+
+            //TabLayout의 경우 앞, 뒤 Fragment를 같이 호출한다.
+            //즉, 사실 상은 가로로 긴 화면인데, 내가 보는 화면만 보여주는 것이다. 그러므로 탭이 바뀌어도 onStart, onResume이 호출되지 않는다.
+            //이런 이유로 탭이 체인지 되었을 때 Adapter.getView()에 걸어둔 애니메이션이 동작하지 않는다.
+            //따라서 별도로 ListView에서 category_name view에만 animation을 적용해준다
+            private void setAnimationCategoryName() {
+                ListView container = (ListView) findViewById(R.id.category_container);
+
+                for(int i = 0; i < container.getChildCount(); i++) {
+                    ViewGroup viewGroup = (ViewGroup) container.getChildAt(i);
+                    for(int j = 0; j < viewGroup.getChildCount(); j++) {
+                        View view = viewGroup.getChildAt(j);
+                        if(R.id.category_name == view.getId()) {
+                            Animation textMoveAnimation = AnimationUtils.loadAnimation(getBaseContext(), R.anim.text_move);
+                            view.startAnimation(textMoveAnimation);
+                        }
+                    }
+                }
             }
         });
     }

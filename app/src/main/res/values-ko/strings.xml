@@ -19,4 +19,9 @@
 
     <!-- activity_setting -->
     <string name="logout">로그아웃</string>
+
+    <string name="category_romance">연애/사랑</string>
+    <string name="category_friend">친구/우정</string>
+    <string name="category_family">가족</string>
+    <string name="category_adventure">모험/여행</string>
 </resources>

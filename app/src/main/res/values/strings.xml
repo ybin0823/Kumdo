@@ -21,4 +21,9 @@
 
     <!-- activity_setting -->
     <string name="logout">Logout</string>
+
+    <string name="category_romance">Romance</string>
+    <string name="category_friend">Friendship</string>
+    <string name="category_family">Family</string>
+    <string name="category_adventure">Adventure/Trip</string>
 </resources>
