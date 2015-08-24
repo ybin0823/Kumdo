@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -48,6 +50,8 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
 
     private List<Writing> writings;
     private ListView mListView;
+    private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static BestFragment newInstance(int category) {
         BestFragment f = new BestFragment();
@@ -77,6 +81,8 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         super.onCreate(savedInstanceState);
 
         mContext = getActivity().getApplicationContext();
+        mProgressBar = (ProgressBar) getActivity().findViewById(R.id.progressbar);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -84,6 +90,20 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         View view = inflater.inflate(R.layout.best_view, container, false);
         mListView = (ListView) view.findViewById(R.id.best_list);
         mListView.setOnItemClickListener(this);
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        requestData();
+                    }
+                }
+        );
 
         return view;
     }
@@ -101,7 +121,12 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onResume() {
         super.onResume();
+        requestData();
 
+
+    }
+
+    private void requestData() {
         // category num가 -1이면 전체 정보 가져오기
         // 그 외(0~3) 이면 해당되는 카테고리 정보만 가져온다
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
@@ -124,6 +149,11 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
                 mAdapter = new ImageAdapter(getActivity(), mImageUrls,
                         VolleySingleton.getInstance(mContext).getImageLoader());
                 mListView.setAdapter(mAdapter);
+
+                mProgressBar.setVisibility(View.GONE);
+
+                // Stop the refreshing indicator
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         }, new Response.ErrorListener() {
             @Override

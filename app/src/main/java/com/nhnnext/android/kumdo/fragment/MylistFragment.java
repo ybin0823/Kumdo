@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,6 +45,8 @@ import java.util.List;
 public class MylistFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "MylistFragment";
     private Context mContext;
+
+    private GridView mGridView;
     private ImageAdapter mAdapter;
 
     private int mImageSize;
@@ -51,6 +55,8 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     private String userEmail;
 
     private List<Writing> writings;
+    private ProgressBar mProgressBar;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onAttach(Activity activity) {
@@ -67,14 +73,37 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         SharedPreferences data = getActivity().getSharedPreferences("userInfo", 0);
         userEmail = data.getString("userEmail", "");
         Log.d(TAG, "userEmail : " + data.getString("userEmail", ""));
+
+        mProgressBar = (ProgressBar) getActivity().findViewById(R.id.progressbar);
+        mProgressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mylist_view, container, false);
-        final GridView mGridView = (GridView) view.findViewById(R.id.grid_view);
+        mGridView = (GridView) view.findViewById(R.id.grid_view);
         mGridView.setOnItemClickListener(this);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        requestData();
+                    }
+                }
+        );
+        requestData();
+
+
+        return view;
+    }
+
+    private void requestData() {
         //TODO Refactoring JsonArray -> Gson : convert to Writng.class -> add List<Writing>
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
                 RequestUrl.GET_MYLIST_FROM + userEmail,
@@ -117,6 +146,11 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
                             }
                         }
                 );
+
+                mProgressBar.setVisibility(View.GONE);
+
+                // Stop the refreshing indicator
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -126,8 +160,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         });
 
         VolleySingleton.getInstance(mContext).addTodRequestQueue(jsonArrayRequest);
-
-        return view;
     }
 
     @Override
