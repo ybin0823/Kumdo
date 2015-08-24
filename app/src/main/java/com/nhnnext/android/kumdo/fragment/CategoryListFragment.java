@@ -1,6 +1,7 @@
 package com.nhnnext.android.kumdo.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.TypedValue;
@@ -8,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
 import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
@@ -51,6 +54,13 @@ public class CategoryListFragment extends BestFragment {
     public void onResume() {
         super.onResume();
         requestData(mImageAdpater);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getActivity(), DetailActivity.class);
+        intent.putExtra(DetailActivity.WRITING_DATA_EXTRA, writings.get(position - 1));
+        startActivity(intent);
     }
 
     private class ImageAdapter extends ArrayAdapter {
