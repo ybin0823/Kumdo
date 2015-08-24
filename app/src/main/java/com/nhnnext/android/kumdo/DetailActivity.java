@@ -67,7 +67,7 @@ public class DetailActivity extends AppCompatActivity {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Detail");
+        actionBar.setTitle(R.string.detail_title);
     }
 
     @Override

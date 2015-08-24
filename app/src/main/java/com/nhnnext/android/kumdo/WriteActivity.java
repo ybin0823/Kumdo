@@ -140,7 +140,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Write");
+        actionBar.setTitle(R.string.write_title);
     }
 
     @Override

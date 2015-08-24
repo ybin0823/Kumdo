@@ -14,12 +14,17 @@
     <string name="user_email">Email address</string>
 
     <!-- activity_write -->
+    <string name="write_title">Write</string>
     <string name="edit_text">Edit</string>
     <string name="abstract_world">Abstract</string>
     <string name="concrete_world">Concrete</string>
     <string name="nature_world">Nature</string>
 
+    <!-- activity_detail -->
+    <string name="detail_title">Detail</string>
+
     <!-- activity_setting -->
+    <string name="settings_title">Settings</string>
     <string name="logout">Logout</string>
 
     <string name="category_romance">Romance</string>

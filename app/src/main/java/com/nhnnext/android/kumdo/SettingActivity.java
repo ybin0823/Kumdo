@@ -34,7 +34,7 @@ public class SettingActivity extends AppCompatActivity {
         final ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.action_settings);
+        actionBar.setTitle(R.string.settings_title);
     }
 
     public void logout(View v) {

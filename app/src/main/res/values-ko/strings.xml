@@ -12,10 +12,15 @@
     <string name="mylist">내 목록</string>
 
     <!-- activity_write -->
+    <string name="write_title">글쓰기</string>
     <string name="edit_text">Edit</string>
     <string name="abstract_world">Abstract</string>
     <string name="concrete_world">Concrete</string>
     <string name="nature_world">Nature</string>
+
+    <!-- activity_detail -->
+    <string name="settings_title">설정</string>
+    <string name="detail_title">상세보기</string>
 
     <!-- activity_setting -->
     <string name="logout">로그아웃</string>
