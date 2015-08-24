@@ -4,4 +4,8 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="image_size">150dp</dimen>
     <dimen name="category_view_size">120dp</dimen>
+
+    <!-- FlowLayout-->
+    <dimen name="word_padding_horizontal">15dp</dimen>
+    <dimen name="word_padding_vertical">15dp</dimen>
 </resources>

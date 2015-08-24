@@ -32,11 +32,12 @@
             android:layout_height="match_parent"
             />
 
-        <LinearLayout
+        <com.nhnnext.android.kumdo.util.FlowLayout
             android:id="@+id/content_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"/>
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </com.nhnnext.android.kumdo.util.FlowLayout>
 
     </RelativeLayout>
     <LinearLayout
