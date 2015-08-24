@@ -2,6 +2,7 @@ package com.nhnnext.android.kumdo.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -150,6 +151,7 @@ public class CategoryFragment extends Fragment {
 
             holder.image.setImageResource(category.image[position]);
             holder.name.setText(category.name[position]);
+            holder.name.setPaintFlags(holder.name.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
             Animation textMoveAnimation = AnimationUtils.loadAnimation(getActivity(), R.anim.text_move);
             holder.name.startAnimation(textMoveAnimation);
 
