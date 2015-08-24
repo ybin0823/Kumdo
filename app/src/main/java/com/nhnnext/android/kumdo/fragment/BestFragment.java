@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
 import com.nhnnext.android.kumdo.model.Writing;
+import com.nhnnext.android.kumdo.util.RequestUrl;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
 import org.json.JSONArray;
@@ -39,7 +40,6 @@ import java.util.List;
  */
 public class BestFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "BestFragment";
-    private static final String SERVER_GET_BEST = "http://192.168.0.3:3000/best?category=";
 
     private ImageAdapter mAdapter;
     public String[] mImageUrls;
@@ -104,7 +104,8 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
 
         // category num가 -1이면 전체 정보 가져오기
         // 그 외(0~3) 이면 해당되는 카테고리 정보만 가져온다
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, SERVER_GET_BEST + getSelectedCategory(),
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
+                RequestUrl.GET_BEST_FROM + getSelectedCategory(),
                 null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {

@@ -25,6 +25,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.nhnnext.android.kumdo.model.User;
 import com.nhnnext.android.kumdo.model.Writing;
+import com.nhnnext.android.kumdo.util.RequestUrl;
 
 import org.apache.http.Header;
 
@@ -47,7 +48,6 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
     private static final int GET_CATEGORY = 2;
-    public static final String UPLOAD_TO_SERVER = "http://192.168.0.3:3000/upload";
     public static final int No_CATEGORY = -1;
 
     private Context mContext;
@@ -223,7 +223,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             Log.e(TAG, "FileNotFoundException : " + e);
         }
 
-        client.post(UPLOAD_TO_SERVER, params, new AsyncHttpResponseHandler() {
+        client.post(RequestUrl.UPLOAD_TO_SERVER, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
                 Toast.makeText(getApplicationContext(), "Save Success!!!", Toast.LENGTH_SHORT).show();

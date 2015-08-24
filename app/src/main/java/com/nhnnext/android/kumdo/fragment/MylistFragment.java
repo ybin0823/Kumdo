@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
 import com.nhnnext.android.kumdo.model.Writing;
+import com.nhnnext.android.kumdo.util.RequestUrl;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
 import org.json.JSONArray;
@@ -46,7 +47,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
     private int mImageSize;
 
-    private static final String SERVER_GET_MYLIST = "http://192.168.0.3:3000/mylist";
     public String[] mImageUrls;
     private String userEmail;
 
@@ -77,7 +77,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
         //TODO Refactoring JsonArray -> Gson : convert to Writng.class -> add List<Writing>
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
-                SERVER_GET_MYLIST + "?email=" + userEmail,
+                RequestUrl.GET_MYLIST_FROM + userEmail,
                 null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray jsonArray) {
