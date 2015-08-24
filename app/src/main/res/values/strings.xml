@@ -9,7 +9,7 @@
     <!-- activity_menu -->
     <string name="home">Home</string>
     <string name="category">Category</string>
-    <string name="mylist">Mylist</string>
+    <string name="mylist">My List</string>
     <string name="user_name">User name</string>
     <string name="user_email">Email address</string>
 

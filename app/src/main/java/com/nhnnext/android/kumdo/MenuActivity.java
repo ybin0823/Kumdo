@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -48,9 +49,6 @@ public class MenuActivity extends AppCompatActivity {
     private static final String TAG = "MenuActivity";
 
     public static final String EMPTY_TITLE = "";
-    public static final String HOME = "Home";
-    public static final String CATEGORY = "Category";
-    public static final String MY_LIST = "My List";
     public static final int CategoryTab = 1;
 
     private DrawerLayout mDrawerLayout;
@@ -166,9 +164,9 @@ public class MenuActivity extends AppCompatActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         final Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new BestFragment(), HOME);
-        adapter.addFragment(new CategoryFragment(), CATEGORY);
-        adapter.addFragment(new MylistFragment(), MY_LIST);
+        adapter.addFragment(new BestFragment(), R.string.home);
+        adapter.addFragment(new CategoryFragment(), R.string.category);
+        adapter.addFragment(new MylistFragment(), R.string.mylist);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -177,7 +175,7 @@ public class MenuActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                getSupportActionBar().setTitle(adapter.getPageTitle(position));
+                getSupportActionBar().setTitle(adapter.getTitle(position));
                 if (position == CategoryTab) {
                     setAnimationCategoryName();
                 }
@@ -189,7 +187,6 @@ public class MenuActivity extends AppCompatActivity {
                     setAnimationCategoryName();
                 }
             }
-
 
             //TabLayout의 경우 앞, 뒤 Fragment를 같이 호출한다.
             //즉, 사실 상은 가로로 긴 화면인데, 내가 보는 화면만 보여주는 것이다. 그러므로 탭이 바뀌어도 onStart, onResume이 호출되지 않는다.
@@ -227,13 +224,13 @@ public class MenuActivity extends AppCompatActivity {
 
     private class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragments = new ArrayList<>();
-        private final List<String> mFragmentsTitle = new ArrayList<>();
+        private final List<Integer> mFragmentsTitle = new ArrayList<>();
 
         public Adapter(FragmentManager fragmentManager) {
             super(fragmentManager);
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        public void addFragment(Fragment fragment, int title) {
             mFragments.add(fragment);
             mFragmentsTitle.add(title);
         }
@@ -248,8 +245,7 @@ public class MenuActivity extends AppCompatActivity {
             return mFragments.size();
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
+        public @StringRes int getTitle(int position) {
             return mFragmentsTitle.get(position);
         }
     }

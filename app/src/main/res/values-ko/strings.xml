@@ -2,7 +2,7 @@
     <string name="app_name">백일장</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">설정</string>
     <string name="action_write">글쓰기</string>
     <string name="action_close">닫기</string>
 
