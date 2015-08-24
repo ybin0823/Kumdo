@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -60,6 +61,7 @@ public class MenuActivity extends AppCompatActivity {
 
     private OAuthLogin mOAuthLoginInstance;
     private Context mContext;
+    private ProgressBar progressBar;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class MenuActivity extends AppCompatActivity {
         mUserImage = (NetworkImageView) findViewById(R.id.user_image);
         mUserName = (TextView) findViewById(R.id.user_name);
         mUserEmail = (TextView) findViewById(R.id.user_email);
+        progressBar = (ProgressBar) findViewById(R.id.progressbar);
 
         mOAuthLoginInstance = OAuthLogin.getInstance();
         mContext = this;
@@ -178,6 +181,7 @@ public class MenuActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle(adapter.getTitle(position));
                 if (position == CategoryTab) {
                     setAnimationCategoryName();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
@@ -185,6 +189,7 @@ public class MenuActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
                 if (state == CategoryTab) {
                     setAnimationCategoryName();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
 
