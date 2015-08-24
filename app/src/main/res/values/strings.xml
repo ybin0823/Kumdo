@@ -19,9 +19,6 @@
     <string name="concrete_world">Concrete</string>
     <string name="nature_world">Nature</string>
 
-    <!-- activity detail -->
-    <string name="used_word">Used Words : </string>
-
     <!-- activity_setting -->
     <string name="logout">Logout</string>
 

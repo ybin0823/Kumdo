@@ -17,9 +17,6 @@
     <string name="concrete_world">Concrete</string>
     <string name="nature_world">Nature</string>
 
-    <!-- activity detail -->
-    <string name="used_word">사용한 단어 : </string>
-
     <!-- activity_setting -->
     <string name="logout">로그아웃</string>
 

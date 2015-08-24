@@ -1,24 +1,18 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.widget.ImageView;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.nhnnext.android.kumdo.model.Writing;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
 /**
  * 1. 현재 클릭 된 아이템의 ID(Intent로 구현할지 다른 방법을 사용할지는 추후 논의)를 받는다
@@ -34,12 +28,13 @@ public class DetailActivity extends AppCompatActivity {
     public static final String IMAGE_DATA_EXTRA = "extra_image";
     public static final String WRITING_DATA_EXTRA = "extra_writing";
 
-    private ImageView imageView;
+    private NetworkImageView imageView;
     private TextView sentence;
     private TextView words;
     private TextView name;
     private TextView date;
     private Writing writing;
+    private Context mContext;
 
 
     @Override
@@ -47,6 +42,26 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        initActionBar();
+        initData();
+        initView();
+    }
+
+    private void initView() {
+        imageView = (NetworkImageView) findViewById(R.id.detail_image);
+        sentence = (TextView) findViewById(R.id.sentence);
+        words = (TextView) findViewById(R.id.words);
+        name = (TextView) findViewById(R.id.name);
+        date = (TextView) findViewById(R.id.date);
+    }
+
+    private void initData() {
+        mContext = this;
+        Intent intent = getIntent();
+        writing = intent.getParcelableExtra(WRITING_DATA_EXTRA);
+    }
+
+    private void initActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -54,29 +69,18 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Detail");
-
-        Intent intent = getIntent();
-        writing = intent.getParcelableExtra(WRITING_DATA_EXTRA);
-        Log.d(TAG, writing.toString());
-
-        imageView = (ImageView) findViewById(R.id.detail_image);
-        sentence = (TextView) findViewById(R.id.sentence);
-        words = (TextView) findViewById(R.id.words);
-        name = (TextView) findViewById(R.id.name);
-        date = (TextView) findViewById(R.id.date);
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        // Image, Text 등의 View를 그려준다(onResume, onStart, onCreate 중에서 고민)
 
+        // Image, Text 등의 View를 그려준다
         sentence.setText(writing.getSentence());
         words.setText(writing.getWords());
         name.setText(writing.getName());
         date.setText(writing.getDate());
-        loadImage(writing.getImageUrl(), imageView);
+        loadImage();
     }
 
     @Override
@@ -101,13 +105,23 @@ public class DetailActivity extends AppCompatActivity {
 
     /**
      * method : loadImage()
-     * parameter : Item Id
-     * id로 서버에 저장된 데이터를 불러와서 View를 그려준다
+     * url로 서버에 저장된 이미지를 불러와서 ImageView를 그려준다
      */
-
-    public void loadImage(String imageUrl, ImageView imageView) {
-        final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-        task.execute(imageUrl);
+    public void loadImage() {
+        //Image의 width와 height를 통일해서 정사각형 모양으로 만들기 위해 사용
+        final RelativeLayout mLayout = (RelativeLayout) findViewById(R.id.detail_container);
+        mLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        RelativeLayout.LayoutParams mImageViewLayoutParams = new RelativeLayout.LayoutParams(
+                                mLayout.getWidth(), mLayout.getWidth()
+                        );
+                        imageView.setLayoutParams(mImageViewLayoutParams);
+                        imageView.setImageUrl(writing.getImageUrl(), VolleySingleton.getInstance(mContext).getImageLoader());
+                    }
+                }
+        );
     }
     /**
      * method : showComment()
@@ -124,54 +138,4 @@ public class DetailActivity extends AppCompatActivity {
      * parameter : Item Id
      * 좋아요 버튼을 누르면 Id의 Like count가 증가한다
      */
-
-    private class BitmapWorkerTask extends AsyncTask<String, Void, Bitmap> {
-        private static final String TAG = "BitmapWorkerTask";
-        private final WeakReference<ImageView> imageViewReference;
-        public String data = "";
-
-        public BitmapWorkerTask(ImageView imageView) {
-            // Use a WeakReference to ensure the ImageView can be garbage collected
-            imageViewReference = new WeakReference<ImageView>(imageView);
-        }
-
-        //TODO Volley로 변경
-        @Override
-        protected Bitmap doInBackground(String... params) {
-            Log.d(TAG, "doInBackground - starting work");
-
-            data = params[0];
-
-            try {
-                HttpURLConnection conn = (HttpURLConnection )new URL(data).openConnection();
-                InputStream is = conn.getInputStream();
-
-                return decodeSampledBitmapFromStream(is, 2);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Bitmap bitmap) {
-            if (imageViewReference != null && bitmap != null) {
-                final ImageView imageView = imageViewReference.get();
-                if (imageView != null) {
-                    Log.d(TAG, "onPostExecute - setting bitmap");
-                    imageView.setImageBitmap(bitmap);
-                }
-            }
-        }
-
-        public Bitmap decodeSampledBitmapFromStream(InputStream is, int inSampleSize) {
-            Log.d(TAG, "decodeSampledBitmapFromStream - resizing bitmap");
-
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = false;
-            options.inSampleSize = inSampleSize;
-
-            return BitmapFactory.decodeStream(is, null, options);
-        }
-    }
 }
