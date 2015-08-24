@@ -7,7 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.nhnnext.android.kumdo.fragment.BestFragment;
+import com.nhnnext.android.kumdo.fragment.CategoryListFragment;
 import com.nhnnext.android.kumdo.model.Category;
 
 /**
@@ -55,11 +55,11 @@ public class DetailCategoryActivity extends AppCompatActivity {
         super.onStart();
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        BestFragment bestFragment = new BestFragment();
+        CategoryListFragment listFragment = new CategoryListFragment();
         Bundle bundle = new Bundle();
         bundle.putInt("category", mSelectedCategory);
-        bestFragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.detail_category, bestFragment);
+        listFragment.setArguments(bundle);
+        fragmentTransaction.add(R.id.detail_category, listFragment);
         fragmentTransaction.commit();
     }
 }

@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,21 +37,21 @@ import java.util.List;
 
 /**
  * 서버에서 저장된 데이터 중 최신 데이터(or 추천수가 가장 높은 데이터)를 화면에 뿌려주는 Fragmet
- * Home화면(MenuActivity)와 카테고리 별 최신 데이터(DetailCategoryActivity)에서 사용(`15.08.23 by jyb)
+ * Home화면(MenuActivity)에서 사용(`15.08.24 by jyb)
  * Tab Layout을 위해 ViewPager를 사용. 따라서 v4.Fragment를 상속받는다(`15.08.10 by jyb)
  */
 public class BestFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final String TAG = "BestFragment";
 
-    private ImageAdapter mAdapter;
     public String[] mImageUrls;
+    protected Context mContext;
 
-    private Context mContext;
+    protected List<Writing> writings;
 
-    private List<Writing> writings;
-    private ListView mListView;
-    private ProgressBar mProgressBar;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
+    protected BaseAdapter mAdapter;
+    protected ListView mListView;
+    protected ProgressBar mProgressBar;
+    protected SwipeRefreshLayout mSwipeRefreshLayout;
 
     public static BestFragment newInstance(int category) {
         BestFragment f = new BestFragment();
@@ -91,20 +91,6 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         mListView = (ListView) view.findViewById(R.id.best_list);
         mListView.setOnItemClickListener(this);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh);
-        mSwipeRefreshLayout.setOnRefreshListener(
-                new SwipeRefreshLayout.OnRefreshListener() {
-                    @Override
-                    public void onRefresh() {
-                        Log.i(TAG, "onRefresh called from SwipeRefreshLayout");
-
-                        // This method performs the actual data-refresh operation.
-                        // The method calls setRefreshing(false) when it's finished.
-                        requestData();
-                    }
-                }
-        );
-
         return view;
     }
 
@@ -116,17 +102,29 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onStart() {
         super.onStart();
+        mAdapter = new ImageAdapter(VolleySingleton.getInstance(mContext).getImageLoader());
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) getActivity().findViewById(R.id.swiperefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+
+                        // This method performs the actual data-refresh operation.
+                        // The method calls setRefreshing(false) when it's finished.
+                        requestData(mAdapter);
+                    }
+                }
+        );
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        requestData();
-
-
+        requestData(mAdapter);
     }
 
-    private void requestData() {
+    protected void requestData(final BaseAdapter imageAdapter) {
         // category num가 -1이면 전체 정보 가져오기
         // 그 외(0~3) 이면 해당되는 카테고리 정보만 가져온다
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
@@ -141,14 +139,11 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
                 for (int i = 0; i < size; i++) {
                     try {
                         writings.add(gson.fromJson(jsonArray.getString(i), Writing.class));
-                        mImageUrls[i] = writings.get(i).getImageUrl();
                     } catch (JSONException e) {
                         Log.e(TAG, "JSONException : " + e);
                     }
                 }
-                mAdapter = new ImageAdapter(getActivity(), mImageUrls,
-                        VolleySingleton.getInstance(mContext).getImageLoader());
-                mListView.setAdapter(mAdapter);
+                mListView.setAdapter(imageAdapter);
 
                 mProgressBar.setVisibility(View.GONE);
 
@@ -197,26 +192,21 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
         startActivity(intent);
     }
 
-    private class ImageAdapter extends ArrayAdapter {
-        private final Context mContext;
-        private String[] mImageUrls;
+    private class ImageAdapter extends BaseAdapter {
         private ImageLoader mImageLoader;
 
-        public ImageAdapter(Context context, String[] param, ImageLoader imageLoader) {
-            super(context, 0, param);
-            this.mContext = context;
-            mImageUrls = param;
+        public ImageAdapter(ImageLoader imageLoader) {
             mImageLoader = imageLoader;
         }
 
         @Override
         public int getCount() {
-            return mImageUrls.length;
+            return writings.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return mImageUrls[position];
+            return writings.get(position);
         }
 
         @Override
@@ -229,8 +219,8 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             View v = convertView;
             Writing writing = writings.get(position);
             if (v == null) {
-                LayoutInflater vi = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.best_row, null);
+                final LayoutInflater inflater = LayoutInflater.from(getActivity());
+                v = inflater.inflate(R.layout.best_row, null);
             }
 
             ViewHolder holder = (ViewHolder) v.getTag(R.id.id_holder);
@@ -240,7 +230,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
                 v.setTag(R.id.id_holder, holder);
             }
 
-            holder.image.setImageUrl(mImageUrls[position], mImageLoader);
+            holder.image.setImageUrl(writing.getImageUrl(), mImageLoader);
             holder.text.setText(writing.getSentence());
             holder.words.setText(writing.getWords());
 
