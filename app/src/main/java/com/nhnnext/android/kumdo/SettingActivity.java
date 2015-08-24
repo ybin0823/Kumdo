@@ -3,7 +3,9 @@ package com.nhnnext.android.kumdo;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.nhn.android.naverlogin.OAuthLogin;
@@ -20,7 +22,19 @@ public class SettingActivity extends AppCompatActivity {
 
         mContext = this;
 
+        initActionBar();
+
         mOAuthLoginInstance = OAuthLogin.getInstance();
+    }
+
+    private void initActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        final ActionBar actionBar = getSupportActionBar();
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.action_settings);
     }
 
     public void logout(View v) {
