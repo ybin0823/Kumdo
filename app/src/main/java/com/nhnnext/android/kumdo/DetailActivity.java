@@ -25,7 +25,6 @@ import com.nhnnext.android.kumdo.volley.VolleySingleton;
  */
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = "DetailActivity";
-    public static final String IMAGE_DATA_EXTRA = "extra_image";
     public static final String WRITING_DATA_EXTRA = "extra_writing";
 
     private NetworkImageView imageView;

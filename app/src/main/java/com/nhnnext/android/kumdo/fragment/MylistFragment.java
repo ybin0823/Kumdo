@@ -205,7 +205,7 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.IMAGE_DATA_EXTRA, mImageUrls[position]);
+        intent.putExtra(DetailActivity.WRITING_DATA_EXTRA, writings.get(position));
         startActivity(intent);
     }
 
