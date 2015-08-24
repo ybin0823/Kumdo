@@ -10,6 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.nhnnext.android.kumdo.model.Writing;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,9 +32,14 @@ import java.net.URL;
 public class DetailActivity extends AppCompatActivity {
     private static final String TAG = "DetailActivity";
     public static final String IMAGE_DATA_EXTRA = "extra_image";
+    public static final String WRITING_DATA_EXTRA = "extra_writing";
 
-    private String data;
     private ImageView imageView;
+    private TextView sentence;
+    private TextView words;
+    private TextView name;
+    private TextView date;
+    private Writing writing;
 
 
     @Override
@@ -47,11 +55,15 @@ public class DetailActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle("Detail");
 
-        //상세보기 클릭 한 아이템 정보를 서버에서 가져온다 : loadDetail()
         Intent intent = getIntent();
-        data = intent.getStringExtra(IMAGE_DATA_EXTRA);
+        writing = intent.getParcelableExtra(WRITING_DATA_EXTRA);
+        Log.d(TAG, writing.toString());
 
         imageView = (ImageView) findViewById(R.id.detail_image);
+        sentence = (TextView) findViewById(R.id.sentence);
+        words = (TextView) findViewById(R.id.words);
+        name = (TextView) findViewById(R.id.name);
+        date = (TextView) findViewById(R.id.date);
 
     }
 
@@ -59,7 +71,12 @@ public class DetailActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         // Image, Text 등의 View를 그려준다(onResume, onStart, onCreate 중에서 고민)
-        loadDetail(data, imageView);
+
+        sentence.setText(writing.getSentence());
+        words.setText(writing.getWords());
+        name.setText(writing.getName());
+        date.setText(writing.getDate());
+        loadImage(writing.getImageUrl(), imageView);
     }
 
     @Override
@@ -83,12 +100,12 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     /**
-     * method : loadDetail()
+     * method : loadImage()
      * parameter : Item Id
      * id로 서버에 저장된 데이터를 불러와서 View를 그려준다
      */
 
-    public void loadDetail(String imageUrl, ImageView imageView) {
+    public void loadImage(String imageUrl, ImageView imageView) {
         final BitmapWorkerTask task = new BitmapWorkerTask(imageView);
         task.execute(imageUrl);
     }

@@ -1,6 +1,9 @@
 package com.nhnnext.android.kumdo.model;
 
-public class Writing {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Writing implements Parcelable {
     private String name;
     private String email;
     private String sentence;
@@ -17,6 +20,16 @@ public class Writing {
         this.imageUrl = imageUrl;
         this.category = category;
         this.date = date;
+    }
+
+    public Writing(Parcel in) {
+        this.name = in.readString();
+        this.email = in.readString();
+        this.sentence = in.readString();
+        this.words = in.readString();
+        this.imageUrl = in.readString();
+        this.category = in.readInt();
+        this.date = in.readString();
     }
 
     public String getName() {
@@ -87,4 +100,31 @@ public class Writing {
                 ", date='" + date + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(sentence);
+        dest.writeString(words);
+        dest.writeString(imageUrl);
+        dest.writeInt(category);
+        dest.writeString(date);
+    }
+
+    public static final Parcelable.Creator<Writing> CREATOR = new Parcelable.Creator<Writing>() {
+        public Writing createFromParcel(Parcel in) {
+            return new Writing(in);
+        }
+
+        @Override
+        public Writing[] newArray(int size) {
+            return new Writing[size];
+        }
+    };
 }

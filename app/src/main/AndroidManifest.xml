@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
-    android:versionCode="48"
-    android:versionName="0.4.8">
+    android:versionCode="49"
+    android:versionName="0.4.9">
 
     <!-- Allows applications to open network sockets -->
     <uses-permission android:name="android.permission.INTERNET" />
