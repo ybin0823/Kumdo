@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.nhnnext.android.kumdo.fragment.BestFragment;
+import com.nhnnext.android.kumdo.model.Category;
 
 /**
  * 선택 된 카테고리 번호에 따라 title을 바꾼다
@@ -37,16 +38,14 @@ public class DetailCategoryActivity extends AppCompatActivity {
 
     private int getCategoryName(int selectedCategory) {
         switch(selectedCategory) {
-            case 0:
+            case Category.ROMANCE:
                 return R.string.category_romance;
-            case 1:
+            case Category.FRIEND:
                 return R.string.category_friend;
-            case 2:
+            case Category.FAMILY:
                 return R.string.category_family;
-            case 3:
+            case Category.ADVENTURE:
                 return R.string.category_adventure;
-
-
         }
         return -1;
     }

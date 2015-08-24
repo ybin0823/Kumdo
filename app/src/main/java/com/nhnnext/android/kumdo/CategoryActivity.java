@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.nhnnext.android.kumdo.model.Category;
+
 /**
  * 데이터를 저장하기 전에 카테고리를 선택하기 위한 Activity
  * Dialog 형식처럼 배경은 transparent를 적용.
@@ -14,10 +16,7 @@ import android.widget.Button;
  * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.23 by jyb)
  */
 public class CategoryActivity extends AppCompatActivity implements View.OnClickListener {
-    private static final int CATEGORY_ROMANCE = 0;
-    private static final int CATEGORY_FRIEND = 1;
-    private static final int CATEGORY_FAMILY = 2;
-    private static final int CATEGORY_ADVENTURE = 3;
+    private static final String CATEGORY = "category";
 
     Intent intent;
     private Context mContext;
@@ -52,23 +51,19 @@ public class CategoryActivity extends AppCompatActivity implements View.OnClickL
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.category_romance:
-                intent.putExtra("category", CATEGORY_ROMANCE);
-                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_ROMANCE));
+                setResult(RESULT_OK, new Intent().putExtra(CATEGORY, Category.ROMANCE));
                 finish();
             break;
             case R.id.category_friend:
-                intent.putExtra("category", CATEGORY_FRIEND);
-                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_FRIEND));
+                setResult(RESULT_OK, new Intent().putExtra(CATEGORY, Category.FRIEND));
                 finish();
                 break;
             case R.id.category_family:
-                intent.putExtra("category", CATEGORY_FAMILY);
-                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_FAMILY));
+                setResult(RESULT_OK, new Intent().putExtra(CATEGORY, Category.FAMILY));
                 finish();
                 break;
             case R.id.category_adventure:
-                intent.putExtra("category", CATEGORY_ADVENTURE);
-                setResult(RESULT_OK, new Intent().putExtra("category", CATEGORY_ADVENTURE));
+                setResult(RESULT_OK, new Intent().putExtra(CATEGORY, Category.ADVENTURE));
                 finish();
                 break;
         }

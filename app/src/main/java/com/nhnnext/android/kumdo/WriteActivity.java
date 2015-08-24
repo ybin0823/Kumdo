@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nhnnext.android.kumdo.model.Category;
 import com.nhnnext.android.kumdo.model.User;
 import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.util.RequestUrl;
@@ -48,7 +49,6 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private static final String TAG = "WriteActivity";
     public static final int LOAD_FROM_GALLERY = 1;
     private static final int GET_CATEGORY = 2;
-    public static final int No_CATEGORY = -1;
 
     private Context mContext;
 
@@ -266,8 +266,8 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case GET_CATEGORY:
                 if(resultCode == RESULT_OK) {
-                    mCategory = data.getIntExtra("category", No_CATEGORY);
-                    if(mCategory != No_CATEGORY) {
+                    mCategory = data.getIntExtra("category", Category.NO_CATEOGRY);
+                    if(mCategory != Category.NO_CATEOGRY) {
                         String sentence = getSetence();
                         String words = Arrays.toString(usedWords.toArray(new String[usedWords.size()]));
                         String date = String.valueOf(System.currentTimeMillis());
