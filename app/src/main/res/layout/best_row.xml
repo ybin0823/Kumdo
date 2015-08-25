@@ -2,12 +2,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/best_row"
     android:layout_width="match_parent"
-    android:layout_height="300dp">
+    android:layout_height="wrap_content">
 
     <com.android.volley.toolbox.NetworkImageView
         android:id="@+id/writing_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="200dp"
         android:scaleType="centerCrop" />
     <TextView
         android:id="@+id/writing_text"
