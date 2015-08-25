@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -189,12 +190,20 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             mEditText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT));
             mEditText.requestFocus();
-            //TODO editText 클릭시 soft keyboard 출력
             mContainer.addView(mEditText);
             mEditText.addTextChangedListener(textWatcher);
 
+            showSoftKeyboard(mEditText);
             // 연속 2번 생성 방지를 위한 flag
             enableEdit = false;
+        }
+    }
+
+    public void showSoftKeyboard(View view) {
+        if (view.requestFocus()) {
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, InputMethodManager.SHOW_IMPLICIT);
         }
     }
 
