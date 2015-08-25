@@ -331,6 +331,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         values.put(WritingOpenHelper.KEY_SENTENCE, writing.getSentence());
         values.put(WritingOpenHelper.KEY_WORDS, writing.getWords());
         values.put(WritingOpenHelper.KEY_IMAGE_URL, writing.getImageUrl());
+        values.put(WritingOpenHelper.KEY_CATEGORY, writing.getCategory());
         values.put(WritingOpenHelper.KEY_DATE, writing.getDate());
 
         // Insert the new row, returning the primary key value of the new row

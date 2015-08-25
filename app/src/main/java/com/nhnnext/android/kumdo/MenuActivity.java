@@ -85,6 +85,12 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause");
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         RequestApiTask requestApiTask = new RequestApiTask();

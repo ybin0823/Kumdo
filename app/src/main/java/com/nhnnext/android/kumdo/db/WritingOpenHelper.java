@@ -13,6 +13,7 @@ public class WritingOpenHelper extends SQLiteOpenHelper {
     public static final String KEY_WORDS = "words";
     public static final String KEY_IMAGE_URL = "imageUrl";
     public static final String KEY_DATE = "date";
+    public static final String KEY_CATEGORY = "category";
     private final String CREATE_WRITING_TABLE =
             "CREATE TABLE IF NOT EXISTS writings(" +
                     "_id INTEGER PRIMARY KEY AUTOINCREMENT," +

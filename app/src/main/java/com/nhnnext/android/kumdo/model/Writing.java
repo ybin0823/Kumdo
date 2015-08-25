@@ -32,6 +32,10 @@ public class Writing implements Parcelable {
         this.date = in.readString();
     }
 
+    public Writing() {
+
+    }
+
     public String getName() {
         return name;
     }

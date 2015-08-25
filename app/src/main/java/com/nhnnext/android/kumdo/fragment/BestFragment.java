@@ -163,6 +163,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG, "onPause()");
     }
 
     @Override

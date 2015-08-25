@@ -14,6 +14,10 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 /**
  * 1. 현재 클릭 된 아이템의 ID(Intent로 구현할지 다른 방법을 사용할지는 추후 논의)를 받는다
  * 2. 서버로 현재 아이템의 ID를 보내서 저장 된 데이터를 불러온다
@@ -78,7 +82,8 @@ public class DetailActivity extends AppCompatActivity {
         sentence.setText(writing.getSentence());
         words.setText(writing.getWords());
         name.setText(writing.getName());
-        date.setText(writing.getDate());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+        date.setText(sdf.format(new Date(Long.valueOf(writing.getDate()))));
         loadImage();
     }
 
