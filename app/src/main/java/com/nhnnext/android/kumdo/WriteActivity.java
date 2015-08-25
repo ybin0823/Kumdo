@@ -1,8 +1,10 @@
 package com.nhnnext.android.kumdo;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nhnnext.android.kumdo.db.WritingOpenHelper;
 import com.nhnnext.android.kumdo.model.Category;
 import com.nhnnext.android.kumdo.model.User;
 import com.nhnnext.android.kumdo.model.Writing;
@@ -76,6 +79,9 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private StringBuilder temp;
     private TextWatcher textWatcher;
 
+    WritingOpenHelper mDbHelper;
+    SQLiteDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,6 +126,8 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             }
 
         };
+
+        mDbHelper = new WritingOpenHelper(mContext);
     }
 
     private void initView() {
@@ -295,13 +303,14 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                 Toast.makeText(getApplicationContext(), "Save Success!!!", Toast.LENGTH_SHORT).show();
                 try {
                     String imageUrl = new String(bytes, "UTF-8");
-                    Log.d(TAG, "imageUrl : " + imageUrl);
+                    writing.setImageUrl(imageUrl);
                 } catch (UnsupportedEncodingException e) {
                     Log.e(TAG, "UnsupportedEncodingException : " + e);
                 }
 
                 finish();
-                //TODO save data to SQLite
+                writeToDb();
+
             }
 
             @Override
@@ -309,6 +318,25 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
+    }
+
+    private void writeToDb() {
+        // Get the data repository in write mode
+        db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(WritingOpenHelper.KEY_NAME, writing.getName());
+        values.put(WritingOpenHelper.KEY_EMAIL, writing.getEmail());
+        values.put(WritingOpenHelper.KEY_SENTENCE, writing.getSentence());
+        values.put(WritingOpenHelper.KEY_WORDS, writing.getWords());
+        values.put(WritingOpenHelper.KEY_IMAGE_URL, writing.getImageUrl());
+        values.put(WritingOpenHelper.KEY_DATE, writing.getDate());
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(WritingOpenHelper.WRITING_TABLE_NAME, null, values);
+        Log.d(TAG, "" + newRowId);
+        db.close();
     }
 
     private void setWriting(String sentence, String words, String date) {
