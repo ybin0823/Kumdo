@@ -243,7 +243,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         TextView mTextView= new TextView(mContext);
         mTextView.setText(word);
         if (sentence.length() + mTextView.length() > MAX_SENTENCE_LENGTH) {
-            Toast.makeText(this, "Text is too long", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.too_long_text, Toast.LENGTH_SHORT).show();
             return;
         }
         sentence.append(mTextView.getText() + SPACE);
@@ -255,29 +255,10 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     //TODO validation check about text, word
     public void onClickSave(View v) {
         if (mImagePath == null)  {
-            Toast.makeText(this, "Please select your image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.select_image, Toast.LENGTH_SHORT).show();
             return;
         }
         showCategoryDialog();
-    }
-
-    private String getSetence() {
-        StringBuilder sentence = new StringBuilder();
-        TextView textView;
-        int count = mContainer.getChildCount();
-
-        for (int i = 0; i < count; i++) {
-            textView = (TextView) mContainer.getChildAt(i);
-            if (textView.getText().length() != 0) {
-                sentence.append(textView.getText() + SPACE);
-            }
-        }
-
-        if(sentence.length() == 0) {
-            Toast.makeText(this, "글을 입력하세요", Toast.LENGTH_SHORT).show();
-            return null;
-        }
-        return sentence.toString();
     }
 
     private void sendMultipart(String sentence, String words, String date) {
@@ -300,7 +281,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         client.post(RequestUrl.UPLOAD_TO_SERVER, params, new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
-                Toast.makeText(getApplicationContext(), "Save Success!!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
                 try {
                     String imageUrl = new String(bytes, "UTF-8");
                     writing.setImageUrl(imageUrl);
@@ -379,7 +360,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                         sendMultipart(sentence.toString(), words, date);
 
                     } else {
-                        Toast.makeText(this, "Please choose category", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.select_category, Toast.LENGTH_SHORT).show();
                     }
                 }
         }
