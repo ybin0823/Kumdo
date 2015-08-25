@@ -35,6 +35,7 @@ import org.apache.http.Header;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
@@ -292,6 +293,13 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onSuccess(int i, Header[] headers, byte[] bytes) {
                 Toast.makeText(getApplicationContext(), "Save Success!!!", Toast.LENGTH_SHORT).show();
+                try {
+                    String imageUrl = new String(bytes, "UTF-8");
+                    Log.d(TAG, "imageUrl : " + imageUrl);
+                } catch (UnsupportedEncodingException e) {
+                    Log.e(TAG, "UnsupportedEncodingException : " + e);
+                }
+
                 finish();
                 //TODO save data to SQLite
             }
@@ -303,10 +311,9 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         });
     }
 
-    private boolean setWriting(String sentence, String words, String date) {
+    private void setWriting(String sentence, String words, String date) {
         writing = new Writing(user.getName(), user.getEmail(), sentence,
                 words, "", mCategory, date);
-        return true;
     }
 
     public void pickImagefromGallery(View view) {
