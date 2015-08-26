@@ -20,7 +20,10 @@ import com.nhnnext.android.kumdo.R;
 import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 카테고리 별 리스트를 볼 때, 상단의 AppBar로 인해 이미지의 상단부분이 덮이는 문제가 있다.
@@ -131,8 +134,11 @@ public class CategoryListFragment extends BestFragment {
             }
 
             holder.image.setImageUrl(writing.getImageUrl(), mImageLoader);
-            holder.text.setText(writing.getSentence());
             holder.words.setText(writing.getWords());
+            holder.name.setText(writing.getName());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+            holder.date.setText(sdf.format(new Date(Long.valueOf(writing.getDate()))));
 
             return v;
         }
@@ -141,11 +147,15 @@ public class CategoryListFragment extends BestFragment {
             NetworkImageView image;
             TextView text;
             TextView words;
+            TextView name;
+            TextView date;
 
             public ViewHolder(View v) {
                 image = (NetworkImageView) v.findViewById(R.id.writing_image);
                 text = (TextView) v.findViewById(R.id.writing_text);
                 words = (TextView) v.findViewById(R.id.writing_words);
+                name = (TextView) v.findViewById(R.id.writing_writer);
+                date = (TextView) v.findViewById(R.id.writing_date);
                 v.setTag(this);
             }
         }

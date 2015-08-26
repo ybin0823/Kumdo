@@ -32,8 +32,11 @@ import com.nhnnext.android.kumdo.volley.VolleySingleton;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 서버에서 저장된 데이터 중 최신 데이터(or 추천수가 가장 높은 데이터)를 화면에 뿌려주는 Fragmet
@@ -188,6 +191,7 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(TAG, "onItemClick : " + position);
         Intent intent = new Intent(getActivity(), DetailActivity.class);
         intent.putExtra(DetailActivity.WRITING_DATA_EXTRA, writings.get(position));
         startActivity(intent);
@@ -238,6 +242,10 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
                 holder.text.setText(writing.getSentence());
             }
             holder.words.setText(writing.getWords());
+            holder.name.setText(writing.getName());
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
+            holder.date.setText(sdf.format(new Date(Long.valueOf(writing.getDate()))));
 
             return v;
         }
@@ -246,11 +254,15 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             NetworkImageView image;
             TextView text;
             TextView words;
+            TextView name;
+            TextView date;
 
             public ViewHolder(View v) {
                 image = (NetworkImageView) v.findViewById(R.id.writing_image);
                 text = (TextView) v.findViewById(R.id.writing_text);
                 words = (TextView) v.findViewById(R.id.writing_words);
+                name = (TextView) v.findViewById(R.id.writing_writer);
+                date = (TextView) v.findViewById(R.id.writing_date);
                 v.setTag(this);
             }
         }
