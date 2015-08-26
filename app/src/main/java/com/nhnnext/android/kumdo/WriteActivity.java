@@ -243,7 +243,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         params.put("name", user.getName());
         params.put("email", user.getEmail());
         params.put("sentence", sentence);
-        params.put("words", words);
+        params.put("words", words.replaceAll("[\\[ | \\]]", ""));
         params.put("category", mCategory);
         params.put("date", date);
 
