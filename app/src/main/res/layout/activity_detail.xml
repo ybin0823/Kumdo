@@ -37,6 +37,7 @@
             android:layout_below="@id/detail_image"
             android:textStyle="bold"
             android:padding="5dp"
+            android:layout_marginLeft="5dp"
             android:layout_alignParentLeft="true"
             />
         <TextView
@@ -46,6 +47,7 @@
             android:layout_below="@id/detail_image"
             android:textStyle="bold"
             android:padding="5dp"
+            android:layout_marginRight="5dp"
             android:layout_alignParentRight="true"
             />
         <TextView
@@ -66,6 +68,7 @@
             android:textStyle="bold"
             android:textColor="#ffffff"
             android:textSize="16sp"
+            android:layout_marginBottom="10dp"
             android:layout_alignBottom="@id/detail_image"/>
 
     </RelativeLayout>
@@ -77,11 +80,13 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:src="@drawable/ic_favorite_black_36dp"
             android:background="@android:color/transparent"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
             android:src="@drawable/ic_comment_black_36dp"
             android:background="@android:color/transparent"/>
     </LinearLayout>

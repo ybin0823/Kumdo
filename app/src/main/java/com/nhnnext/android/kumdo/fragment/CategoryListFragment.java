@@ -134,6 +134,7 @@ public class CategoryListFragment extends BestFragment {
             }
 
             holder.image.setImageUrl(writing.getImageUrl(), mImageLoader);
+            holder.text.setText(writing.getSentence());
             holder.words.setText(writing.getWords());
             holder.name.setText(writing.getName());
 
