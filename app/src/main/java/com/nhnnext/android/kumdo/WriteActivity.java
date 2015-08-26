@@ -327,6 +327,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                     if(mCategory != Category.NO_CATEOGRY) {
                         String sentence = getSentence();
                         String words = Arrays.toString(usedWords.toArray(new String[usedWords.size()]));
+                        words.replaceAll("[\\[ | \\]]", "");
                         String date = String.valueOf(System.currentTimeMillis());
 
                         // set wrting
