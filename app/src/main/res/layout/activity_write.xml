@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
+        android:background="#F0F0F0"
         android:layout_weight="1">
         <ImageView
             android:id="@+id/image_view"
@@ -38,30 +39,39 @@
             android:layout_height="wrap_content">
 
         </com.nhnnext.android.kumdo.util.FlowLayout>
-
-    </RelativeLayout>
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        >
         <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_save_black_36dp"
-            android:id="@+id/save_button"
-            android:onClick="onClickSave"
-            />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_image_black_36dp"
             android:id="@+id/image_button"
-            android:layout_below="@id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_image_black_48dp"
+            android:background="@android:color/transparent"
+            android:padding="300dp"
             android:onClick="pickImagefromGallery"
             />
-    </LinearLayout>
+    </RelativeLayout>
+    <!--<RelativeLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="right"-->
+        <!-->-->
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/ic_save_black_36dp"-->
+            <!--android:id="@+id/save_button"-->
+            <!--android:onClick="onClickSave"-->
+            <!--/>-->
+
+        <!--<ImageButton-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/ic_image_black_36dp"-->
+            <!--android:id="@+id/image_button"-->
+            <!--android:layout_below="@id/save_button"-->
+            <!--android:onClick="pickImagefromGallery"-->
+            <!--/>-->
+    <!--</RelativeLayout>-->
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -5,6 +5,8 @@
     <string name="action_settings">설정</string>
     <string name="action_write">글쓰기</string>
     <string name="action_close">닫기</string>
+    <string name="action_save">저장</string>
+    <string name="action_new">추가</string>
 
     <!-- activity_menu -->
     <string name="home">홈</string>
@@ -27,6 +29,7 @@
 
     <!-- activity_write -->
     <string name="too_long_text">글이 최대 길이를 초과했습니다</string>
+    <string name="empty_text">글을 입력하지 않으셨습니다</string>
     <string name="select_image">이미지를 선택해주세요</string>
     <string name="save_success">저장이 성공했습니다</string>
     <string name="select_category">카테고리를 선택해주세요</string>

@@ -15,11 +15,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,7 +121,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         setSupportActionBar(toolbar);
 
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_action_back);
+        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_36dp);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(R.string.write_title);
     }
@@ -155,6 +159,35 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         super.onDestroy();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu items for use in the action bar
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_write, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle presses on the action bar items
+        switch (item.getItemId()) {
+            case R.id.action_new:
+                pickImagefromGallery();
+                return true;
+            case R.id.action_save:
+                if (mImagePath == null)  {
+                    Toast.makeText(this, R.string.select_image, Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+                if (getSentence().length() == 0) {
+                    Toast.makeText(this, R.string.empty_text, Toast.LENGTH_SHORT).show();
+                }
+                showCategoryDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     /**
      * method : onClickEditText()
@@ -227,15 +260,6 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         enableEdit = true;
     }
 
-    public void onClickSave(View v) {
-        Log.d(TAG, getSentence());
-        if (mImagePath == null)  {
-            Toast.makeText(this, R.string.select_image, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        showCategoryDialog();
-    }
-
     private void sendMultipart(String sentence, String words, String date) {
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
@@ -302,6 +326,10 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void pickImagefromGallery(View view) {
+        pickImagefromGallery();
+    }
+
+    public void pickImagefromGallery() {
         // Google의 기본 Galley Application 실행
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -318,6 +346,8 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         switch(requestCode) {
             case LOAD_FROM_GALLERY:
                 if(resultCode == RESULT_OK) {
+                    ImageButton imageButton = (ImageButton) findViewById(R.id.image_button);
+                    imageButton.setVisibility(View.GONE);
                     loadImageFromGallery(data);
                 }
                 break;
