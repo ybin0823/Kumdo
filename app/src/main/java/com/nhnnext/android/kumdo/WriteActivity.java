@@ -70,6 +70,7 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private Button mConcreteButton;
     private Button mAbstractButton;
     private Button mNatureButton;
+    private Button mEditButton;
     private ImageView mImageView;
 
     private User user;
@@ -107,10 +108,12 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         mConcreteButton = (Button) findViewById(R.id.concrete_button);
         mAbstractButton = (Button) findViewById(R.id.abstract_button);
         mNatureButton = (Button) findViewById(R.id.nature_button);
+        mEditButton = (Button) findViewById(R.id.edit_button);
 
         mConcreteButton.setOnClickListener(this);
         mAbstractButton.setOnClickListener(this);
         mNatureButton.setOnClickListener(this);
+        mEditButton.setOnClickListener(this);
 
         mContainer = (FlowLayout)findViewById(R.id.content_container);
         mImageView = (ImageView) findViewById(R.id.image_view);
@@ -130,9 +133,9 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
         Word word = new Word();
-        mConcreteButton.setText(word.concreteWorld[new Random().nextInt(5)]);
-        mAbstractButton.setText(word.abstractWorld[new Random().nextInt(5)]);
-        mNatureButton.setText(word.natureWorld[new Random().nextInt(5)]);
+        mConcreteButton.setText(word.concreteWord[new Random().nextInt(5)]);
+        mAbstractButton.setText(word.abstractWord[new Random().nextInt(5)]);
+        mNatureButton.setText(word.natureWord[new Random().nextInt(5)]);
     }
 
     @Override
@@ -190,11 +193,11 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     /**
-     * method : onClickEditText()
+     * method : addEditText()
      * edit 버튼을 클릭하면 화면에 editText창을 생성
      * 연속 2번 생성은 안된다
      */
-    public void onClickEditText(View v) {
+    public void addEditText(View v) {
         if (enableEdit && getSentence().length() < MAX_SENTENCE_LENGTH ) {
             EditText mEditText = new EditText(this);
             mEditText.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -224,18 +227,16 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
      */
     @Override
     public void onClick(View v) {
-        if(getSentence().length() < MAX_SENTENCE_LENGTH) {
-            // 다음 3가지 경우에만 addWord method 실행
-            switch(v.getId()) {
-                case R.id.abstract_button:
-                case R.id.concrete_button:
-                case R.id.nature_button:
-                    addWord(v);
-                    break;
-            }
-            return;
+        switch (v.getId()) {
+            case R.id.edit_button:
+                addEditText(v);
+                break;
+            case R.id.abstract_button:
+            case R.id.concrete_button:
+            case R.id.nature_button:
+                addWord(v);
+                break;
         }
-        Toast.makeText(this, R.string.too_long_text, Toast.LENGTH_SHORT).show();
     }
 
     private String getSentence() {
@@ -249,15 +250,19 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     public void addWord(View v) {
-        Button button = (Button) v;
-        String word = button.getText().toString();
+        if (getSentence().length() < MAX_SENTENCE_LENGTH) {
+            Button button = (Button) v;
+            String word = button.getText().toString();
 
-        TextView mTextView= new TextView(mContext);
-        mTextView.setText(word);
+            TextView mTextView= new TextView(mContext);
+            mTextView.setText(word);
 
-        mContainer.addView(mTextView);
-        usedWords.add(word);
-        enableEdit = true;
+            mContainer.addView(mTextView);
+            usedWords.add(word);
+            enableEdit = true;
+            return;
+        }
+        Toast.makeText(this, R.string.too_long_text, Toast.LENGTH_SHORT).show();
     }
 
     private void sendMultipart(String sentence, String words, String date) {
@@ -394,19 +399,6 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
         startActivityForResult(intent, GET_CATEGORY);
     }
 
-    // 추후에는 Server 내에 word table을 유지할 예정
-    private class Word {
-        private String [] abstractWorld = {
-                "love", "pleasure", "happy", "sadness", "angry"
-        };
-        private String [] concreteWorld = {
-                "book", "hand", "chicken", "bus", "pencil"
-        };
-        private String [] natureWorld = {
-                "sun", "water", "sea", "river", "mouatain"
-        };
-    }
-
     // EditTextWatcher는 현재 FlowLayout에 있는 텍스트의 전체길이와
     // 추가 된 editText의 길이가 Max length가 넘는지 체크하기 위한 class
     private class EditTextWatcher implements TextWatcher {
@@ -434,5 +426,17 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                 return;
             }
         }
+    }
+
+    private class Word {
+        private String [] abstractWord = {
+                "love", "pleasure", "happy", "sadness", "angry"
+        };
+        private String [] concreteWord = {
+                "book", "hand", "chicken", "bus", "pencil"
+        };
+        private String [] natureWord = {
+                "sun", "water", "sea", "river", "mouatain"
+        };
     }
 }

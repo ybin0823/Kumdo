@@ -18,9 +18,9 @@
     <!-- activity_write -->
     <string name="write_title">Write</string>
     <string name="edit_text">Edit</string>
-    <string name="abstract_world">Abstract</string>
-    <string name="concrete_world">Concrete</string>
-    <string name="nature_world">Nature</string>
+    <string name="abstract_word">Abstract</string>
+    <string name="concrete_word">Concrete</string>
+    <string name="nature_word">Nature</string>
 
     <!-- activity_detail -->
     <string name="detail_title">Detail</string>
