@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.nhnnext.android.kumdo.fragment.CategoryListFragment;
 import com.nhnnext.android.kumdo.model.Category;
@@ -17,6 +18,7 @@ import com.nhnnext.android.kumdo.model.Category;
  * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.23 by jyb)
  */
 public class DetailCategoryActivity extends AppCompatActivity {
+    private static final String TAG = "DetailCategoryActivity";
     private int mSelectedCategory;
 
     @Override
@@ -38,6 +40,9 @@ public class DetailCategoryActivity extends AppCompatActivity {
 
     private int getCategoryName(int selectedCategory) {
         switch(selectedCategory) {
+            default:
+                Log.e(TAG, "" + selectedCategory);
+                return -1;
             case Category.ROMANCE:
                 return R.string.category_romance;
             case Category.FRIEND:
@@ -47,7 +52,6 @@ public class DetailCategoryActivity extends AppCompatActivity {
             case Category.ADVENTURE:
                 return R.string.category_adventure;
         }
-        return -1;
     }
 
     @Override

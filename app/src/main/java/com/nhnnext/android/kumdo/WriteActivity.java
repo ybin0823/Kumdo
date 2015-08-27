@@ -34,6 +34,7 @@ import com.loopj.android.http.RequestParams;
 import com.nhnnext.android.kumdo.db.WritingOpenHelper;
 import com.nhnnext.android.kumdo.model.Category;
 import com.nhnnext.android.kumdo.model.User;
+import com.nhnnext.android.kumdo.model.Word;
 import com.nhnnext.android.kumdo.model.Writing;
 import com.nhnnext.android.kumdo.util.FlowLayout;
 import com.nhnnext.android.kumdo.util.RequestUrl;
@@ -45,7 +46,6 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 /**
@@ -67,9 +67,9 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     private Context mContext;
 
     private FlowLayout mContainer;
-    private Button mConcreteButton;
-    private Button mAbstractButton;
-    private Button mNatureButton;
+    private Button mNounButton;
+    private Button mVerbButton;
+    private Button mAdjectiveOrAdverbButton;
     private Button mEditButton;
     private ImageView mImageView;
 
@@ -105,14 +105,14 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void initView() {
-        mConcreteButton = (Button) findViewById(R.id.concrete_button);
-        mAbstractButton = (Button) findViewById(R.id.abstract_button);
-        mNatureButton = (Button) findViewById(R.id.nature_button);
+        mNounButton = (Button) findViewById(R.id.noun_button);
+        mVerbButton = (Button) findViewById(R.id.verb_button);
+        mAdjectiveOrAdverbButton = (Button) findViewById(R.id.adjective_adverb_button);
         mEditButton = (Button) findViewById(R.id.edit_button);
 
-        mConcreteButton.setOnClickListener(this);
-        mAbstractButton.setOnClickListener(this);
-        mNatureButton.setOnClickListener(this);
+        mNounButton.setOnClickListener(this);
+        mVerbButton.setOnClickListener(this);
+        mAdjectiveOrAdverbButton.setOnClickListener(this);
         mEditButton.setOnClickListener(this);
 
         mContainer = (FlowLayout)findViewById(R.id.content_container);
@@ -132,10 +132,13 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     @Override
     protected void onStart() {
         super.onStart();
-        Word word = new Word();
-        mConcreteButton.setText(word.concreteWord[new Random().nextInt(5)]);
-        mAbstractButton.setText(word.abstractWord[new Random().nextInt(5)]);
-        mNatureButton.setText(word.natureWord[new Random().nextInt(5)]);
+        Word noun = new Word(mContext, "noun");
+        Word verb = new Word(mContext, "verb");
+        Word adjectiveOrAdverb = new Word(mContext, "adjective_adverb");
+
+        mNounButton.setText(noun.loadWord());
+        mVerbButton.setText(verb.loadWord());
+        mAdjectiveOrAdverbButton.setText(adjectiveOrAdverb.loadWord());
     }
 
     @Override
@@ -174,21 +177,22 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
+            default:
+                Log.e(TAG, item.toString());
+                return false;
             case R.id.action_new:
-                pickImagefromGallery();
-                return true;
+            pickImagefromGallery();
+            return true;
             case R.id.action_save:
-                if (mImagePath == null)  {
+            if (mImagePath == null)  {
                     Toast.makeText(this, R.string.select_image, Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                if (getSentence().length() == 0) {
+            if (getSentence().length() == 0) {
                     Toast.makeText(this, R.string.empty_text, Toast.LENGTH_SHORT).show();
                 }
-                showCategoryDialog();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            showCategoryDialog();
+            return true;
         }
     }
 
@@ -228,12 +232,15 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            default:
+                Log.e(TAG, v.toString());
+                break;
             case R.id.edit_button:
                 addEditText(v);
                 break;
-            case R.id.abstract_button:
-            case R.id.concrete_button:
-            case R.id.nature_button:
+            case R.id.verb_button:
+            case R.id.noun_button:
+            case R.id.adjective_adverb_button:
                 addWord(v);
                 break;
         }
@@ -426,17 +433,5 @@ public class WriteActivity extends AppCompatActivity implements View.OnClickList
                 return;
             }
         }
-    }
-
-    private class Word {
-        private String [] abstractWord = {
-                "love", "pleasure", "happy", "sadness", "angry"
-        };
-        private String [] concreteWord = {
-                "book", "hand", "chicken", "bus", "pencil"
-        };
-        private String [] natureWord = {
-                "sun", "water", "sea", "river", "mouatain"
-        };
     }
 }

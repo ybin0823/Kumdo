@@ -81,7 +81,6 @@ public class MenuActivity extends AppCompatActivity {
         initNavigation();
 
         initTabView();
-
     }
 
     @Override
@@ -146,17 +145,18 @@ public class MenuActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.action_write:
-                openWrite();
-                return true;
-            case R.id.action_settings:
-                openSettings();
-                return true;
             default:
-                return super.onOptionsItemSelected(item);
+                Log.e(TAG, item.toString());
+                return false;
+            case android.R.id.home:
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            return true;
+            case R.id.action_write:
+            openWrite();
+            return true;
+            case R.id.action_settings:
+            openSettings();
+            return true;
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -16,6 +17,7 @@ import com.nhnnext.android.kumdo.model.Category;
  * Theme로 Theme.AppCompat를 사용해야 하므로, 통일을 위해 전부 AppCompatActivity로 상속(`15.08.23 by jyb)
  */
 public class CategoryActivity extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "CategoryActivity";
     private static final String CATEGORY = "category";
 
     Intent intent;
@@ -49,11 +51,14 @@ public class CategoryActivity extends AppCompatActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        switch(v.getId()) {
+        switch (v.getId()) {
+            default:
+                Log.e(TAG, v.toString());
+                break;
             case R.id.category_romance:
                 setResult(RESULT_OK, new Intent().putExtra(CATEGORY, Category.ROMANCE));
                 finish();
-            break;
+                break;
             case R.id.category_friend:
                 setResult(RESULT_OK, new Intent().putExtra(CATEGORY, Category.FRIEND));
                 finish();
