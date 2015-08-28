@@ -3,7 +3,7 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">#38B3FF</item>
+        <item name="colorPrimary">#29B6F6</item>
         <item name="colorPrimaryDark">#2C8CC7</item>
         <item name="android:windowBackground">@android:color/white</item>
         <!--<item name="colorPoint">#FF68FB</item>-->
