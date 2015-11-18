@@ -142,15 +142,11 @@
 
         </activity>
 
-        <activity android:name=".DetailCategoryActivity"
-            android:parentActivityName=".MenuActivity">
+        <activity android:name=".DetailCategoryActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MenuActivity" />
         </activity>
 
         <!-- [naveroauthlogin][start] 네이버 아이디로 로그인에서 사용하는 액티비티를 등록 -->

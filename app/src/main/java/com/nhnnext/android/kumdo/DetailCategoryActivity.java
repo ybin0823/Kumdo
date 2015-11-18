@@ -30,8 +30,6 @@ public class DetailCategoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         final ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back_white_36dp);
-        actionBar.setDisplayHomeAsUpEnabled(true);
 
         mSelectedCategory = getIntent().getIntExtra("category", -1);
         actionBar.setTitle(getCategoryName(mSelectedCategory));
