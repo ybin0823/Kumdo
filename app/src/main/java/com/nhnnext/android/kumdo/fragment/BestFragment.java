@@ -245,7 +245,10 @@ public class BestFragment extends Fragment implements AdapterView.OnItemClickLis
             holder.name.setText(writing.getName());
 
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
-            holder.date.setText(sdf.format(new Date(Long.valueOf(writing.getDate()))));
+
+            // iOS앱의 경우 date가 millisecond가 소수점까지 저장되기 때문에
+            // Android에서 dot(.)를 기준으로 split해준다
+            holder.date.setText(sdf.format(new Date(Long.valueOf(writing.getDate().split("\\.")[0]))));
 
             return v;
         }
