@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.kumdo"
     android:versionCode="100"
-    android:versionName="1.0.0">
+    android:versionName="1.1.0">
 
     <!-- Allows applications to open network sockets -->
     <uses-permission android:name="android.permission.INTERNET" />

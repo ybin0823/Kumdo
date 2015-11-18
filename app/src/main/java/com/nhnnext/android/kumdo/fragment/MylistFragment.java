@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,19 +12,27 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.NetworkImageView;
+import com.google.gson.Gson;
 import com.nhnnext.android.kumdo.DetailActivity;
 import com.nhnnext.android.kumdo.R;
-import com.nhnnext.android.kumdo.db.WritingOpenHelper;
 import com.nhnnext.android.kumdo.model.Writing;
+import com.nhnnext.android.kumdo.util.RequestUrl;
 import com.nhnnext.android.kumdo.volley.VolleySingleton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,11 +52,10 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
     private String userEmail;
 
+    public String[] mImageUrls;
     private List<Writing> writings;
-    private ProgressBar mProgressBar;
 
-    WritingOpenHelper mDbHelper;
-    SQLiteDatabase db;
+    private ProgressBar mProgressBar;
 
     @Override
     public void onAttach(Activity activity) {
@@ -71,8 +76,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
 
         mProgressBar = (ProgressBar) getActivity().findViewById(R.id.progressbar);
         mProgressBar.setVisibility(View.VISIBLE);
-
-        mDbHelper = new WritingOpenHelper(mContext);
     }
 
     @Override
@@ -85,43 +88,6 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         return view;
     }
 
-    private List<Writing> readFromDb() {
-        List<Writing> writings = new ArrayList<>();
-        // Get the data repository in read mode
-        db = mDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                "name",
-                "email",
-                "sentence",
-                "words",
-                "imageUrl",
-                "category",
-                "date"
-        };
-        String selection = WritingOpenHelper.KEY_EMAIL + "= ?";
-        String[] selectionArgs = { userEmail };
-
-        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
-        Cursor cursor = db.query("writings", projection, selection, selectionArgs, null, null, null);
-
-        // AddView into the TableLayout using return value
-        while (cursor.moveToNext()) {
-            Writing writing = new Writing();
-            writing.setName(cursor.getString(0));
-            writing.setEmail(cursor.getString(1));
-            writing.setSentence(cursor.getString(2));
-            writing.setWords(cursor.getString(3));
-            writing.setImageUrl(cursor.getString(4));
-            writing.setCategory(cursor.getInt(5));
-            writing.setDate(cursor.getString(6));
-            writings.add(writing);
-        }
-        cursor.close();
-        db.close();
-
-        return writings;
-    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -131,16 +97,15 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
     @Override
     public void onStart() {
         super.onStart();
+
+        mAdapter = new ImageAdapter(VolleySingleton.getInstance(mContext).getImageLoader());
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        writings = readFromDb();
+        requestData(mAdapter);
 
-        mAdapter = new ImageAdapter(getActivity(), writings,
-                VolleySingleton.getInstance(mContext).getImageLoader());
-        mGridView.setAdapter(mAdapter);
 
         // This listener is used to get the final width of the GridView and then calculate the
         // number of columns and the width of each column. The width of each column is variable
@@ -165,29 +130,37 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         mProgressBar.setVisibility(View.GONE);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
+    protected void requestData(final BaseAdapter imageAdapter) {
+        // category num가 -1이면 전체 정보 가져오기
+        // 그 외(0~3) 이면 해당되는 카테고리 정보만 가져온다
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET,
+                RequestUrl.GET_MY_LIST + userEmail,
+                null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray jsonArray) {
+                Gson gson = new Gson();
+                writings = new ArrayList<Writing>();
+                int size = jsonArray.length();
+                mImageUrls = new String[size];
+                for (int i = 0; i < size; i++) {
+                    try {
+                        writings.add(gson.fromJson(jsonArray.getString(i), Writing.class));
+                    } catch (JSONException e) {
+                        Log.e(TAG, "JSONException : " + e);
+                    }
+                }
+                mGridView.setAdapter(imageAdapter);
 
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
+                mProgressBar.setVisibility(View.GONE);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                Log.e(TAG, "VolleyError : " + volleyError);
+            }
+        });
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
+        VolleySingleton.getInstance(mContext).addTodRequestQueue(jsonArrayRequest);
     }
 
     @Override
@@ -197,32 +170,27 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         startActivity(intent);
     }
 
-    private class ImageAdapter<T> extends ArrayAdapter {
+    private class ImageAdapter extends BaseAdapter {
         private static final String TAG = "ImageAdapter";
-        private final Context mContext;
         private RelativeLayout.LayoutParams mImageViewLayoutParams;
         private int mNumColumns = 0;
         private int mItemHeight = 0;
-        private List<T> params;
         private ImageLoader mImageLoader;
 
-        public ImageAdapter(Context context, List<T> params, ImageLoader imageLoader) {
-            super(context, 0, params);
-            this.mContext = context;
+        public ImageAdapter(ImageLoader imageLoader) {
             mImageViewLayoutParams = new RelativeLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            this.params = params;
             mImageLoader = imageLoader;
         }
 
         @Override
         public int getCount() {
-            return params.size();
+            return writings.size();
         }
 
         @Override
         public Object getItem(int position) {
-            return params.get(position);
+            return writings.get(position);
         }
 
         @Override
@@ -234,11 +202,11 @@ public class MylistFragment extends Fragment implements AdapterView.OnItemClickL
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = convertView;
             ViewHolder holder;
-            Writing writing = (Writing) params.get(position);
+            Writing writing = writings.get(position);
 
             if (v == null) {
-                LayoutInflater vi = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.mylist_tile, parent, false);
+                final LayoutInflater inflater = LayoutInflater.from(getActivity());
+                v = inflater.inflate(R.layout.mylist_tile, parent, false);
                 holder = new ViewHolder(v);
                 v.setTag(holder);
             } else {
